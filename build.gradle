@@ -34,6 +34,9 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	implementation 'io.asyncer:r2dbc-mysql:1.1.0'
+	// https://mvnrepository.com/artifact/io.netty/netty-resolver-dns-native-macos
+	runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.111.Final:osx-aarch_64'
+
 }
 
 tasks.named('test') {
