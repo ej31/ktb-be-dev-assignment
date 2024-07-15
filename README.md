@@ -143,15 +143,15 @@ API 서비스를 구현한다고 하였을 때, 제일 중요한 것은 요청,�
 
 ### 기본
 
-- [ ] Request 요구 사항 만족
-- [ ] Response 요구 사항 만족
-- [ ] Status Code 요구 사항 만족
+- [x] Request 요구 사항 만족
+- [x] Response 요구 사항 만족
+- [x] Status Code 요구 사항 만족
 
 ### 추가
 
 - [ ] 다양한 형태의 응답 형식 구현 (json, xml 등)
-- [ ] 일관성 있는 공통 응답 포맷
-- [ ] API 버저닝
+- [x] 일관성 있는 공통 응답 포맷
+- [x] API 버저닝
 - [ ] API Throttling
 - [ ] Test Code
 
