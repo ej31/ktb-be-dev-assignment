@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: stocks
+  r2dbc:
+    url: r2dbc:mysql://${DB_URL}/assignment
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    pool:
+      initial-size: 1
+      max-size: 3
+      max-idle-time: 30m
