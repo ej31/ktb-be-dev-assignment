@@ -13,6 +13,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class StocksRouter {
     @Bean
     public RouterFunction<ServerResponse> routing(StocksHandler handler) {
-        return route(GET("/api/{companyCode}"), handler::getClosingPriceBetweenDates);
+        return route(GET("/v1/companies/{companyCode}/price/closing"), handler::getClosingPriceBetweenDates);
     }
 }
