@@ -12,6 +12,8 @@ import java.time.LocalDate;
 public class StocksHistory {
     @Id
     private final Long id;
+    @Column("company_code")
+    private final String companyCode;
     @Column("trade_date")
     private final LocalDate tradeDate;
     @Column("open_price")

@@ -9,3 +9,6 @@ spring:
       initial-size: 1
       max-size: 3
       max-idle-time: 30m
+logging:
+  level:
+    org.ktb.stocks: debug
