@@ -4,36 +4,35 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ktb.stocks.dto.ApiResponse;
-import org.springframework.boot.web.reactive.filter.OrderedWebFilter;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.resource.NoResourceFoundException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilterChain;
+import org.springframework.web.server.WebExceptionHandler;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @RequiredArgsConstructor
+@Order(-2)
 @Component
-public class GlobalErrorWebFilter implements OrderedWebFilter {
+public class GlobalWebExceptionHandler implements WebExceptionHandler {
     private final ObjectMapper objectMapper;
-    private static final int ORDER = -1000;
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        return chain.filter(exchange)
-                .onErrorResume(NoResourceFoundException.class, e -> {
-                    exchange.getResponse().setStatusCode(e.getStatusCode());
-                    return writeResponse(exchange, "Not Found");
-                })
-                .onErrorResume(ResponseStatusException.class, e -> {
-                    exchange.getResponse().setStatusCode(e.getStatusCode());
-                    log.debug("Exception", e);
-                    return writeResponse(exchange, e.getReason());
-                });
+    public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
+        if (ex instanceof NoResourceFoundException noResourceFoundException) {
+            exchange.getResponse().setStatusCode(noResourceFoundException.getStatusCode());
+            return writeResponse(exchange, "Not Found");
+        }
+        if (ex instanceof ResponseStatusException responseStatusException) {
+            exchange.getResponse().setStatusCode(responseStatusException.getStatusCode());
+            return writeResponse(exchange, (responseStatusException.getReason()));
+        }
+        return writeResponse(exchange, ex.getMessage());
     }
 
     private Mono<Void> writeResponse(ServerWebExchange exchange, String message) {
@@ -48,10 +47,5 @@ public class GlobalErrorWebFilter implements OrderedWebFilter {
         } catch (Exception e) {
             return Mono.error(e);
         }
-    }
-
-    @Override
-    public int getOrder() {
-        return ORDER;
     }
 }

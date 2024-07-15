@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class ApiKeyWebFilter implements OrderedWebFilter {
     private final ApiKeyProperty apiKeyProperty;
-    private static final int ORDER = -900;
+    private static final int ORDER = -1;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
