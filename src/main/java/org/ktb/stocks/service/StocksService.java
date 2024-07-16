@@ -31,7 +31,7 @@ public class StocksService {
             LocalDate endDate = request.queryParam("endDate")
                     .map(stringLocalDateConverter::convert)
                     .orElseThrow(() -> new IllegalArgumentException("endDate is required"));
-            if (startDate.isBefore(endDate)) {
+            if (startDate.isAfter(endDate)) {
                 throw new IllegalArgumentException("startDate must be before endDate");
             }
 

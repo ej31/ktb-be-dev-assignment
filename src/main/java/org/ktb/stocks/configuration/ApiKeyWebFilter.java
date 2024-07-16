@@ -10,6 +10,8 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
@@ -19,11 +21,9 @@ public class ApiKeyWebFilter implements OrderedWebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String apiKey = exchange.getRequest().getHeaders().getFirst(apiKeyProperty.getHeader());
-        if (apiKey == null) {
-            log.debug("Missing api key");
-            return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing Api Key"));
-        }
+        Optional<String> optionalKey = retrieveApiKey(exchange);
+
+        String apiKey = optionalKey.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing Api Key"));
 
         if (!apiKeyProperty.getSecrets().contains(apiKey)) {
             log.debug("Invalid api key : {}", apiKey);
@@ -32,6 +32,21 @@ public class ApiKeyWebFilter implements OrderedWebFilter {
 
         return chain.filter(exchange);
     }
+
+    private Optional<String> retrieveApiKey(ServerWebExchange exchange) {
+        String apiKeyInHeader = exchange.getRequest().getHeaders().getFirst(apiKeyProperty.getHeader());
+        if (apiKeyInHeader != null) {
+            return apiKeyInHeader.describeConstable();
+        }
+
+        String apiKeyInQuery = exchange.getRequest().getQueryParams().getFirst(apiKeyProperty.getQuery());
+        if (apiKeyInQuery != null) {
+            return apiKeyInQuery.describeConstable();
+        }
+
+        return Optional.empty();
+    }
+
 
     @Override
     public int getOrder() {

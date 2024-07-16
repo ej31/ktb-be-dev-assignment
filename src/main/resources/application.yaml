@@ -18,3 +18,4 @@ api:
     secrets:
     - 'c18aa07f-f005-4c2f-b6db-dff8294e6b5e'
     - 'hello'
+    query: 'apiKey'

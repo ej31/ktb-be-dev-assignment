@@ -13,6 +13,7 @@ import java.util.List;
 @Component
 @ConfigurationProperties("api.key")
 public class ApiKeyProperty {
+    private String query;
     private String header;
     private List<String> secrets = new ArrayList<>();
 }

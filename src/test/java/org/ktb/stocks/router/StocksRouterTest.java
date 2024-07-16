@@ -73,4 +73,31 @@ class StocksRouterTest {
                 .jsonPath("$.data")
                 .isArray();
     }
+
+    @Test
+    void query_param_api_key_test() {
+        String companyName = "NVDA";
+        given(apiKeyProperty.getHeader()).willReturn("x-api-key");
+        given(apiKeyProperty.getSecrets()).willReturn(List.of("api-secret"));
+        given(apiKeyProperty.getQuery()).willReturn("apiKey");
+
+        String startDate = "20240101";
+        String endDate = "20240130";
+        String apiKey = "api-secret";
+
+        webClient.get()
+                .uri("/v1/companies/{companyName}/price/closing?startDate={startDate}&endDate={endDate}&apiKey={apiKey}",
+                        companyName, startDate, endDate, apiKey)
+                .exchange()
+
+                .expectStatus()
+                .isOk()
+
+                .expectBody()
+                .jsonPath("$.message")
+                .isEqualTo("OK")
+
+                .jsonPath("$.data")
+                .isArray();
+    }
 }
