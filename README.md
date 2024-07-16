@@ -8,7 +8,9 @@
 
 ## 구현 상세
 ### 결과
-- request : http://localhost:8080/api/v1/stock?companyCode=AAPL&startDate=2024-01-02&endDate=2024-01-04
+- request
+
+  http://localhost:8080/api/v1/stock?companyCode=AAPL&startDate=2024-01-02&endDate=2024-01-04
 - response
   ```
   {
@@ -31,7 +33,7 @@
             "trade_price": 182
         }
     ]
-}
+  }
 
 ### API 설계 철학
 1. **일관성**
@@ -60,7 +62,7 @@ http://localhost:8080/api/v1/stock
 ```
 
 ### API Key 검증
-- 헤더에 API Key 포함
+- **헤더에 API Key 포함**
 - 요청에 키가 없을 경우
   ```
   {
