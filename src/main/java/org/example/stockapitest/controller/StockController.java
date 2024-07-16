@@ -24,9 +24,12 @@ public class StockController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getStock(@RequestParam String companyCode,
-                                      @RequestParam String startDate,
-                                      @RequestParam String endDate) {
+    public ResponseEntity<?> getStock(@RequestParam(required = false) String companyCode,
+                                      @RequestParam(required = false) String startDate,
+                                      @RequestParam(required = false) String endDate) {
+        if(companyCode == null || companyCode.isEmpty() || startDate == null || startDate.isEmpty() || endDate == null || endDate.isEmpty() ) {
+            return CommonResponse.createResponse(HttpStatus.BAD_REQUEST, "No Parameter", null);
+        }
         List<StockDto> stocks = stockServiceImpl.getStockInfo(companyCode, startDate, endDate);
         return CommonResponse.createResponse(HttpStatus.OK, null, stocks);
     }
