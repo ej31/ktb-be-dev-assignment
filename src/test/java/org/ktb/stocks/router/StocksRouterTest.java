@@ -2,24 +2,15 @@ package org.ktb.stocks.router;
 
 import org.junit.jupiter.api.Test;
 import org.ktb.stocks.configuration.ApiKeyProperty;
-import org.ktb.stocks.configuration.BucketConfiguration;
-import org.ktb.stocks.dto.ApiResponse;
-import org.ktb.stocks.dto.ClosingPriceResponse;
-import org.ktb.stocks.service.BucketService;
-import org.ktb.stocks.service.StocksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
