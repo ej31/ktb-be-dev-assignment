@@ -2,6 +2,40 @@
 
 특정 기업의 주가 정보 조회하여 응답을 주는 API 서버 개발
 
+# Stack
+
+- Spring WebFlux
+- Spring R2DBC
+    - io.asyncer:r2dbc-mysql : R2DBC mysql 구현체
+- Lombok
+- Spring devtools
+
+# Features
+
+## 기본 요구 사항
+
+- [x] 특정 기업의 주가 정보 조회가 잘 작동하는가?
+- [x] 요청에 키를 포함하는가?
+  - [x] 헤더
+  - [ ] 파라미터
+- [x] 요청 포맷을 맞추었는가?
+    - companyCode, startDate, endDate
+
+## 추가 요구 사항
+
+- [x] API 디자인을 하였는가?
+    - [x] API 버저닝을 구현하였는가?
+    - [x] API 에 대한 문서화가 잘 되었는가?
+- [x] 일관된 응답 포맷을 설계하였는가?
+- [x] 테스트를 작성하였는가?
+    - [x] 최소 기능 수준까지 검증 할 수 있는가?
+    - [ ] 스트레스 테스트를 진행 하였는가?
+        - 아무래도 DB가 공용이라 진행하지 않았다.
+- [x] API Throttling 을 구현하였는가?
+    - 10초에 10건
+- [ ] 다양한 응답 형식을 제공하는가?
+    - json, xml 등
+
 # API 디자인
 
 ## Versioning
@@ -106,54 +140,90 @@ API 서비스를 구현한다고 하였을 때, 제일 중요한 것은 요청,�
 
 ---
 
-## Features
+# API
+## API KEY
+모든 요청에 API KEY를 제출하셔야 합니다.
+- 요청에 `x-api-key`키로 하고, 사전에 제공받은 키값을 값으로 하는 헤더를 추가해 주세요.
 
-### 기본 요구 사항
+## status codes
 
-- [x] 특정 기업의 주가 정보 조회가 잘 작동하는가?
-- [x] 요청에 키를 포함하는가?
-- [x] 요청 포맷을 맞추었는가?
-    - companyCode, startDate, endDate
+- 200 : 정상 상황
+- 400
+    - 요청에 키가 없는 경우
+    - 필수 파라미터가 오지 않은 경우
+    - 파라미터를 잘못 명시한 경우
+- 403 : 키가 틀린 경우
+- 404 : 존재하지 않는 API를 호출할 경우
+- 429 : 요청 허용량을 초과한 경우
+- 500 : 서버 에러
 
-### 추가 요구 사항
+## GET `/v1/{companyCode}/price/closing`
 
-- [x] API 디자인을 하였는가?
-    - [x] API 버저닝을 구현하였는가?
-    - [x] API 에 대한 문서화가 잘 되었는가?
-- [x] 일관된 응답 포맷을 설계하였는가?
-- [ ] 테스트를 작성하였는가?
-    - [ ] 최소 기능 수준까지 검증 할 수 있는가?
-    - [ ] 스트레스 테스트를 진행 하였는가?
-- [x] API Throttling 을 구현하였는가?
-    - 10초에 10건
-- [ ] 다양한 응답 형식을 제공하는가?
-    - json, xml 등
 
-----
 
-## Stack
+### Request
 
-- Spring WebFlux
-- Spring R2DBC
-    - io.asyncer:r2dbc-mysql : R2DBC mysql 구현체
-- Lombok
-- Spring devtools
+- Path Variables
+    - `companyCode`
+        - 회사 코드를 입력해 주세요 ex) NVDA, AAPL 등
+        - **없는 회사 코드를 입력하면, 정상 응답이 반환되므로 주의해주세요!!**
+- Query Parameters
+    - `startDate`
+        - 검색 시작일을 yyyyMMdd 형식으로 입력해 주세요. _ex) 20240108_
+        - 검색 시작일을 포함합니다.
+        - `endDate` 보다 뒤의 날짜를 지정할 수 없습니다. (같은 날짜는 가능합니다.)
+    - `endDate`
+        - 검색 종료일을 yyyyMMdd 형식으로 입력해 주세요. _ex) 20240108_
+        - 검색 정료일을 포함합니다.
+        - `startDate` 보다 앞의 날짜를 지정할 수 없습니다. (같은 날짜는 가능합니다.)
 
-## 구현 사항
+### Response
 
-### 기본
 
-- [x] Request 요구 사항 만족
-- [x] Response 요구 사항 만족
-- [x] Status Code 요구 사항 만족
 
-### 추가
-
-- [ ] 다양한 형태의 응답 형식 구현 (json, xml 등)
-- [x] 일관성 있는 공통 응답 포맷
-- [x] API 버저닝
-- [ ] API Throttling
-- [ ] Test Code
+**200**
+- `message`
+  - "OK" 가 반환됩니다.
+- `data`
+  - 배열 형식입니다.
+  - 시작일과 종료일 사이의 회사명(companyName), 거래일(tradeDate), 종가(closingPrice) 정보가 들어 있습니다. 
+- 응답 예시
+  ```json5
+  {
+    "message": "OK",
+    "data": [
+        {
+            "companyName": "NVIDIA Corporation",
+            "tradeDate": "2024-01-02",
+            "closingPrice": 48
+        },
+        {
+            "companyName": "NVIDIA Corporation",
+            "tradeDate": "2024-01-03",
+            "closingPrice": 48
+        },
+        {
+            "companyName": "NVIDIA Corporation",
+            "tradeDate": "2024-01-04",
+            "closingPrice": 48
+        },
+    ]
+  }
+  ```
+**4XX**
+- message
+  - 오류에 대한 메시지가 반환됩니다.
+- data
+  - 오류와 관련된 정보가 간혹 제시되나, 거의 제시되지 않습니다.
+- 응답 예시
+    ```json5
+    {
+      "message": "Missing Api Key",
+      "data": {
+      } 
+    }
+    ```
+---
 
 ## 데이터베이스
 
@@ -177,37 +247,3 @@ API 서비스를 구현한다고 하였을 때, 제일 중요한 것은 요청,�
         - 종가
     - volume : bigint
         - 거래량
-
-## Request
-
-- Header
-    - x-api-key : `c18aa07f-f005-4c2f-b6db-dff8294e6b5e`
-- Body
-    - company_code : 회사명
-    - start_date : 시작 날짜
-    - end_date : 종료 날짜
-
-## Response
-
-요청 회사의 시작 날짜 ~ 종료 날짜의 모든 종가
-
-- companyName: 회사명
-- tradeDate : 거래일, 포맷 yyyy-mm-dd
-- closingPrice : 종가
-
-**포함 내용**     
-요청 회사의 시작 날짜 ~ 종료 날짜의 모든 종가
-
-> - companyName: 회사명
-> - tradeDate : 거래일, 포맷 yyyy-mm-dd
-> - closingPrice : 종가
-
-## status codes
-
-- 200 : 정상 상황
-- 400
-    - 요청에 키가 없는 경우
-    - 필수 파라미터가 오지 않은 경우
-- 403 : 키가 틀린 경우
-- 404 : 존재하지 않는 API를 호출할 경우
-- 500 : 서버 에러
