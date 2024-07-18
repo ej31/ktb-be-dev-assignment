@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://dev-assignment.cjugioimm614.ap-northeast-2.rds.amazonaws.com:3306/assignment?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: ericha
+    password: QnOMqkGsaoXjZCCoh08HL2eLXR
+
+  jpa:
+    hibernate:
+      ddl-auto: none    # create, create_drop, update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    database: mysql
+    defer-datasource-initialization: true
+
+security:
+  api-key: c18aa07f-f005-4c2f-b6db-dff8294e6b5e
