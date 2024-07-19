@@ -106,6 +106,7 @@ backend/
 │   │   │               │   └── CorsConfig.java
 │   │   │               ├── v1/
 │   │   │               │   ├── controller/
+│   │   │               │   │   └── CompanyController.java
 │   │   │               │   │   └── StockController.java
 │   │   │               │   ├── model/
 │   │   │               │   │   ├── Company.java
@@ -132,7 +133,9 @@ frontend/
 │   ├── components/
 │   │   └── StockHistory.js
 │   ├── App.js
+│   ├── App.css
 │   ├── index.js
+│   ├── index.css
 │   └── reportWebVitals.js
 ├── package.json
 ```
