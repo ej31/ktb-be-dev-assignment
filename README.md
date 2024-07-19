@@ -49,7 +49,8 @@
 2. **`application.properties` 업데이트**
 <br>
     `src/main/resources/application.properties` 파일을 열고 데이터베이스 자격 증명으로 업데이트합니다.
-    ```properties
+
+   ```properties
     spring.datasource.url=jdbc:mysql://<your-database-url>:3306/assignment
     spring.datasource.username=<your-username>
     spring.datasource.password=<your-password>
@@ -64,7 +65,7 @@
     spring.mvc.cors.allow-credentials=true
     ```
 
-3. **백엔드 빌드 및 실행**
+4. **백엔드 빌드 및 실행**
     ```bash
     ./gradlew bootRun
     ```
