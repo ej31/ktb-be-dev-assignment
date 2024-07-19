@@ -15,9 +15,9 @@
 
 ### [- 주가정보조회 실행 영상 링크 (클릭)](https://www.notion.so/536175661cf044288070ed374a0a3fb8?pvs=4)
 ### Company 조회
-![img_1.png](img_1.png)
+![img_1.png](images/img_1.png)
 ### 주가 정보 조회
-![img.png](img.png)
+![img.png](images/img.png)
 
 ## 목차
 
