@@ -52,8 +52,8 @@
 ### DB 연결 정보
 - **(중요) max connection 갯수는 5 이하로 제한해주시기 바랍니다.**
 ```
-host : dev-assignment.cjugioimm614.ap-northeast-2.rds.amazonaws.com
-port : 3306
+host : ec2-3-36-99-237.ap-northeast-2.compute.amazonaws.com
+port : 13306
 user : {별도제공}
 pw : {별도제공}
 ```
