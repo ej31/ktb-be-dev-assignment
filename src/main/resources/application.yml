@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: ktb-be-dev-assignment
