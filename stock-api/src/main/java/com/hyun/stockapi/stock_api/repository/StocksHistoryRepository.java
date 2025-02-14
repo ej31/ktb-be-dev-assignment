@@ -13,7 +13,6 @@ public interface StocksHistoryRepository extends JpaRepository<StocksHistory, St
 
     List<StocksHistory> findByCompanyCodeAndTradeDateBetween(
             String companyCode,
-            Locale startDate,
-            Locale endDate
+            Locale tradeDate
     );
 }
