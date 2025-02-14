@@ -45,7 +45,7 @@
 
   * closingPrice
     - type : long
-    - 관련 테이블 : `stocks_history` 테이블의 `trade_price`
+    - 관련 테이블 : `stocks_history` 테이블의 `close_price`
   ```
 
 - 또한, 모든 API는 API 키가 쿼리 파라미터 혹은 헤더로 넘어왔을 때에만 응답을 반환해야 합니다.
