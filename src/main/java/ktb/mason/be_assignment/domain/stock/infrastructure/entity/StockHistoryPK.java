@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Embeddable
 @NoArgsConstructor
@@ -17,10 +17,10 @@ public class StockHistoryPK implements Serializable {
     String companyCode;
 
     @Column(name = "trade_date")
-    LocalDateTime tradeDate;
+    LocalDate tradeDate;
 
     @Builder
-    public StockHistoryPK(String companyCode, LocalDateTime tradeDate) {
+    public StockHistoryPK(String companyCode, LocalDate tradeDate) {
         this.companyCode = companyCode;
         this.tradeDate = tradeDate;
     }

@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "stocks_history")
@@ -36,7 +36,7 @@ public class StockHistoryEntity {
     Double volume;
 
     @Builder
-    public StockHistoryEntity(String companyCode, Double openPrice, Double highPrice, Double lowPrice, Double closePrice, Double volume, LocalDateTime tradeDate) {
+    public StockHistoryEntity(String companyCode, Double openPrice, Double highPrice, Double lowPrice, Double closePrice, Double volume, LocalDate tradeDate) {
         this.pk = StockHistoryPK.builder()
                 .companyCode(companyCode)
                 .tradeDate(tradeDate)
@@ -48,7 +48,7 @@ public class StockHistoryEntity {
         this.volume = volume;
     }
 
-    public static StockHistoryEntity from (StockHistory stockHistory) {
+    public static StockHistoryEntity from(StockHistory stockHistory) {
         return StockHistoryEntity.builder()
                 .companyCode(stockHistory.getCompanyCode())
                 .openPrice(stockHistory.getOpenPrice())
