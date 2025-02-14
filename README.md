@@ -44,7 +44,7 @@
     - 관련 테이블 : `stocks_history` 테이블의 `trade_date`
 
   * closingPrice
-    - type : long
+    - type : float
     - 관련 테이블 : `stocks_history` 테이블의 `close_price`
   ```
 
