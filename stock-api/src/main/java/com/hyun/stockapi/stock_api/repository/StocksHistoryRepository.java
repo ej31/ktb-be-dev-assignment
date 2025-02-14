@@ -5,6 +5,7 @@ import com.hyun.stockapi.stock_api.entity.StocksHistoryId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 
@@ -13,6 +14,6 @@ public interface StocksHistoryRepository extends JpaRepository<StocksHistory, St
 
     List<StocksHistory> findByCompanyCodeAndTradeDateBetween(
             String companyCode,
-            Locale tradeDate
+            LocalDate tradeDate
     );
 }

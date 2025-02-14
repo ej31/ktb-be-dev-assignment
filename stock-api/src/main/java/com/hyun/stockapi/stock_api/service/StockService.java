@@ -7,6 +7,7 @@ import com.hyun.stockapi.stock_api.repository.CompanyRepository;
 import com.hyun.stockapi.stock_api.repository.StocksHistoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,7 +22,7 @@ public class StockService {
         this.stocksHistoryRepository = stocksHistoryRepository;
     }
 
-    public List<StockResponseDto> getStockPrices(String companyCode, Locale tradeDate){
+    public List<StockResponseDto> getStockPrices(String companyCode, LocalDate tradeDate){
         Company company =companyRepository.findById(companyCode).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업 코드: "+ companyCode));
 
         List<StocksHistory> historyList = stocksHistoryRepository.findByCompanyCodeAndTradeDateBetween(companyCode,tradeDate);
