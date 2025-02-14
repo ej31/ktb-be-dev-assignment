@@ -13,4 +13,6 @@ public class StockResponseDto {
     private String companyName;
     private String tradeDate;
     private long closingPrice;
+
+
 }
