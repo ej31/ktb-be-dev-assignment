@@ -4,6 +4,7 @@ import com.ktb.yuni.domain.Company;
 import com.ktb.yuni.domain.StocksHistory;
 import com.ktb.yuni.dto.StockResponseDto;
 import com.ktb.yuni.exception.CompanyNotFoundException;
+import com.ktb.yuni.exception.StartDateAfterEndDateException;
 import com.ktb.yuni.repository.CompanyRepository;
 import com.ktb.yuni.repository.StocksHistoryRepository;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,11 @@ public class StockService {
     }
 
     public StockResponseDto getStockPrices(String companyCode, LocalDate startDate, LocalDate endDate) {
+        // startDate가 endDate보다 이전이어야 함
+        if (startDate.isAfter(endDate)) {
+            throw new StartDateAfterEndDateException();
+        }
+
         // 회사 조회
         Company company = companyRepository.findByCompanyCode(companyCode)
                 .orElseThrow(()->new CompanyNotFoundException(companyCode));

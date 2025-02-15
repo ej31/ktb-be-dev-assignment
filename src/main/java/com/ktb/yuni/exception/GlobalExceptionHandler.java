@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,6 +25,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleDateTimeParseException(DateTimeParseException e) {
         return ResponseEntity.badRequest()
                 .body(ApiResponse.failure("잘못된 날짜 형식입니다. yyyy-MM-dd 형식을 사용하세요.", 400));
+    }
+
+    // startDate가 endDate 보다 이전이어야 함
+    @ExceptionHandler(StartDateAfterEndDateException.class)
+    public ResponseEntity<ApiResponse<?>> handleStartDateAfterEndDateException(StartDateAfterEndDateException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.failure(e.getMessage(), 400));
     }
 
     // 찾을 수 없는 회사 코드
