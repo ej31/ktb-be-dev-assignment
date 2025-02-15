@@ -25,7 +25,7 @@ public class StockController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StockResponseDto> getStocks(
+    public List<StockResponseDto> getStockPrices(
             @RequestParam(required = false) String apikey,
             @RequestHeader(value ="x-api-key", required = false ) String headerApiKey,
             @RequestParam String companyCode,

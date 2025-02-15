@@ -37,4 +37,8 @@ public class StocksHistory {
     @Column(name = "volume", nullable = false)
     private float volume;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_code", insertable = false, updatable = false)
+    private Company company;
+
 }

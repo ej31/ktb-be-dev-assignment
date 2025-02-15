@@ -4,6 +4,7 @@ import com.hyun.stockapi.stock_api.dto.StockResponseDto;
 import com.hyun.stockapi.stock_api.entity.Company;
 import com.hyun.stockapi.stock_api.entity.StocksHistory;
 import com.hyun.stockapi.stock_api.repository.CompanyRepository;
+import com.hyun.stockapi.stock_api.repository.CustomStocksHistoryRepository;
 import com.hyun.stockapi.stock_api.repository.StocksHistoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,25 +15,15 @@ import java.util.Locale;
 @Service
 public class StockService {
 
-    private final CompanyRepository companyRepository;
+    private final CustomStocksHistoryRepository customStocksHistoryRepository;
     private final StocksHistoryRepository stocksHistoryRepository;
 
-    public StockService(CompanyRepository companyRepository, StocksHistoryRepository stocksHistoryRepository){
-        this.companyRepository = companyRepository;
+    public StockService(StocksHistoryRepository stocksHistoryRepository, CustomStocksHistoryRepository customStocksHistoryRepository){
+        this.customStocksHistoryRepository = customStocksHistoryRepository;
         this.stocksHistoryRepository = stocksHistoryRepository;
     }
 
     public List<StockResponseDto> getStockPrices(String companyCode, LocalDate tradeDate){
-        Company company =companyRepository.findById(companyCode).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업 코드: "+ companyCode));
-
-        List<StocksHistory> historyList = stocksHistoryRepository.findByCompanyCodeAndTradeDate(companyCode,tradeDate);
-
-        return historyList.stream()
-                .map(h -> StockResponseDto.builder()
-                        .companyName(company.getCompanyName())
-                        .tradeDate(h.getTradeDate().toString())
-                        .closingPrice(h.getClosePrice())
-                        .build())
-                .toList();
+        return customStocksHistoryRepository.findStockPrices(companyCode,tradeDate);
     }
 }

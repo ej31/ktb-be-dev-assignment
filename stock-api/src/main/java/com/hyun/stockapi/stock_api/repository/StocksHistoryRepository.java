@@ -10,10 +10,6 @@ import java.util.List;
 
 
 @Repository
-public interface StocksHistoryRepository extends JpaRepository<StocksHistory, StocksHistoryId> {
+public interface StocksHistoryRepository extends JpaRepository<StocksHistory, StocksHistoryId>,CustomStocksHistoryRepository {
 
-    List<StocksHistory> findByCompanyCodeAndTradeDate(
-            String companyCode,
-            LocalDate tradeDate
-    );
 }
