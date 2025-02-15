@@ -40,7 +40,8 @@ public class SwaggerConfig {
     public GroupedOpenApi stockV1Api() {
         return GroupedOpenApi.builder()
                 .group("거래 API")
-                .pathsToMatch("/api/stock/**")
+                .pathsToMatch("/api/v1/**")
+                .packagesToScan("org.ktb.dev.assignment.presentation.v1")
                 .build();
     }
 }

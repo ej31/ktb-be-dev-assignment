@@ -29,6 +29,7 @@ public enum CustomErrorCode implements ErrorCode {
     // 404 Not Found
     API_NOT_FOUND(404, "E201", "요청한 API를 찾을 수 없습니다."),
     RESOURCE_NOT_FOUND(404, "E202", "요청한 리소스를 찾을 수 없습니다."),
+    COMPANY_NOT_FOUND(404, "E203", "해당 기업 코드를 찾을 수 없습니다."),
 
     // 429 Too Many Requests
     RATE_LIMIT_EXCEEDED(429, "E301", "요청 제한을 초과했습니다. {limit}건/{duration}초 제한"),
