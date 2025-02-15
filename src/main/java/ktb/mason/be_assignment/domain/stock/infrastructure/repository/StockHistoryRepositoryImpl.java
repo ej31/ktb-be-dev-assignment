@@ -3,10 +3,9 @@ package ktb.mason.be_assignment.domain.stock.infrastructure.repository;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import ktb.mason.be_assignment.domain.stock.domain.Company;
 import ktb.mason.be_assignment.domain.stock.domain.StockHistory;
-import ktb.mason.be_assignment.domain.stock.domain.StockInfo;
-import ktb.mason.be_assignment.domain.stock.service.port.StockRepository;
+import ktb.mason.be_assignment.domain.stock.infrastructure.entity.StockHistoryEntity;
+import ktb.mason.be_assignment.domain.stock.service.port.StockHistoryRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static ktb.mason.be_assignment.domain.stock.infrastructure.entity.QCompanyEntity.companyEntity;
 import static ktb.mason.be_assignment.domain.stock.infrastructure.entity.QStockHistoryEntity.stockHistoryEntity;
@@ -22,36 +20,23 @@ import static ktb.mason.be_assignment.domain.stock.infrastructure.entity.QStockH
 @Repository
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class StockRepositoryImpl implements StockRepository {
+public class StockHistoryRepositoryImpl implements StockHistoryRepository {
 
     final JPAQueryFactory query;
 
     @Override
-    public Optional<StockInfo> findStockInfoByCompanyAndDateRange(String companyCode, String startDate, String endDate) {
+    public List<StockHistory> findAllByCompanyAndDateRange(String companyCode, String startDate, String endDate) {
 
-        List<Tuple> results = query
-                .select(stockHistoryEntity, companyEntity)
+        return query
+                .select(stockHistoryEntity)
                 .from(stockHistoryEntity)
                 .join(companyEntity)
                 .on(stockHistoryEntity.pk.companyCode.eq(companyEntity.companyCode))
                 .where(byCompanyCodeAndDate(companyCode, startDate, endDate))
-                .fetch();
-
-        // 조회 결과가 없는 경우 Optional.empty() 반환
-        if (results.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Company company = results.get(0).get(companyEntity).toModel();
-
-        List<StockHistory> stockHistories = results.stream()
-                .map(tuple -> tuple.get(stockHistoryEntity).toModel())
+                .fetch()
+                .stream()
+                .map(StockHistoryEntity::toModel)
                 .toList();
-
-        return Optional.of(StockInfo.builder()
-                .company(company)
-                .stocks(stockHistories)
-                .build());
     }
 
     BooleanExpression byCompanyCodeAndDate(String companyCode, String startDate, String endDate) {

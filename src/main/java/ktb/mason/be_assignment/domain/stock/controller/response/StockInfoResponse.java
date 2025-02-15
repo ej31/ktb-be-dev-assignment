@@ -15,12 +15,12 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StockInfoResponse {
     final CompanyResponse company;
-    final List<StockHistoryResponse> stocks;
+    final List<StockHistoryResponse> stockHistories;
 
     public static StockInfoResponse from (StockInfo stockInfo) {
         return StockInfoResponse.builder()
                 .company(CompanyResponse.from(stockInfo.getCompany()))
-                .stocks(stockInfo.getStocks().stream()
+                .stockHistories(stockInfo.getStockHistories().stream()
                         .map(StockHistoryResponse::from)
                         .toList())
                 .build();

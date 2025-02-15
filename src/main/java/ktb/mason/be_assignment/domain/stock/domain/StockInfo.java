@@ -11,10 +11,10 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StockInfo {
     final Company company;
-    final List<StockHistory> stocks;
+    final List<StockHistory> stockHistories;
     @Builder
-    public StockInfo(Company company, List<StockHistory> stocks) {
+    public StockInfo(Company company, List<StockHistory> stockHistories) {
         this.company = company;
-        this.stocks = stocks;
+        this.stockHistories = stockHistories;
     }
 }
