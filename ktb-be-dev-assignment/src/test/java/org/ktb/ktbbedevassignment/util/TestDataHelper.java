@@ -2,11 +2,11 @@ package org.ktb.ktbbedevassignment.util;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_CLOSING_PRICE;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_HIGHEST_PRICE;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_LOWEST_PRICE;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_OPENING_PRICE;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_VOLUME;
+import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.TEST_CLOSING_PRICE;
+import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.TEST_HIGHEST_PRICE;
+import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.TEST_LOWEST_PRICE;
+import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.TEST_OPENING_PRICE;
+import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.TEST_VOLUME;
 
 @Component
 public class TestDataHelper {

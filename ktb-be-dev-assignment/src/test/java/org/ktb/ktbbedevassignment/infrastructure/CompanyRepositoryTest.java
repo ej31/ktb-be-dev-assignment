@@ -11,9 +11,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_COMPANY_CODE;
-import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_COMPANY_NAME;
-import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_NOT_EXIST_COMPANY_CODE;
+import static org.ktb.ktbbedevassignment.fixture.CompanyTestFixture.TEST_COMPANY_CODE;
+import static org.ktb.ktbbedevassignment.fixture.CompanyTestFixture.TEST_COMPANY_NAME;
+import static org.ktb.ktbbedevassignment.fixture.CompanyTestFixture.TEST_NOT_EXIST_COMPANY_CODE;
 
 @JdbcTest
 @Import({CompanyRepository.class, TestDataHelper.class})

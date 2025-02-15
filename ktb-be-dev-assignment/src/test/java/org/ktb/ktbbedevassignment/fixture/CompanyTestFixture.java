@@ -1,4 +1,4 @@
-package org.ktb.ktbbedevassignment.infrastructure;
+package org.ktb.ktbbedevassignment.fixture;
 
 public class CompanyTestFixture {
 

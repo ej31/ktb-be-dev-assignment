@@ -12,13 +12,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_COMPANY_CODE;
-import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_COMPANY_NAME;
-import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_OTHER_COMPANY_CODE;
-import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_OTHER_COMPANY_NAME;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_CLOSING_PRICE;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_TRADE_DATE;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.plusDay;
+import static org.ktb.ktbbedevassignment.fixture.CompanyTestFixture.TEST_COMPANY_CODE;
+import static org.ktb.ktbbedevassignment.fixture.CompanyTestFixture.TEST_COMPANY_NAME;
+import static org.ktb.ktbbedevassignment.fixture.CompanyTestFixture.TEST_OTHER_COMPANY_CODE;
+import static org.ktb.ktbbedevassignment.fixture.CompanyTestFixture.TEST_OTHER_COMPANY_NAME;
+import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.TEST_CLOSING_PRICE;
+import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.TEST_TRADE_DATE;
+import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.plusDay;
 
 @JdbcTest
 @Import({StockRepository.class, TestDataHelper.class})
