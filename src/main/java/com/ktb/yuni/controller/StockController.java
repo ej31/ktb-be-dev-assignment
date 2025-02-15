@@ -1,14 +1,16 @@
 package com.ktb.yuni.controller;
 
+import com.ktb.yuni.dto.ApiResponse;
 import com.ktb.yuni.dto.StockResponseDto;
 import com.ktb.yuni.service.StockService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Map;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/stocks")
 public class StockController {
@@ -21,7 +23,7 @@ public class StockController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getStockPrices(
+    public ResponseEntity<ApiResponse<?>> getStockPrices(
             @RequestParam String companyCode,
             @RequestParam String startDate,
             @RequestParam String endDate,
@@ -31,14 +33,12 @@ public class StockController {
         String apiKey = (apiKeyHeader != null) ? apiKeyHeader : apiKeyParam;
 
         if (!VALID_API_KEY.equals(apiKey)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Invalid API Key"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.failure("invalid api key"));
         }
 
-        try {
-             StockResponseDto response = stockService.getStockPrices(companyCode, LocalDate.parse(startDate), LocalDate.parse(endDate));
-             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
-        }
+        StockResponseDto response = stockService.getStockPrices(
+                companyCode, LocalDate.parse(startDate), LocalDate.parse(endDate)
+        );
+        return ResponseEntity.ok(ApiResponse.success("주식 데이터 조회 성공", response));
     }
 }
