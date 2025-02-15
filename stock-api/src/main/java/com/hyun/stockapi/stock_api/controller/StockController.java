@@ -1,10 +1,12 @@
 package com.hyun.stockapi.stock_api.controller;
 
 
+import com.hyun.stockapi.stock_api.dto.StockRequestDto;
 import com.hyun.stockapi.stock_api.dto.StockResponseDto;
 import com.hyun.stockapi.stock_api.exception.ApiKeyInvalidException;
 import com.hyun.stockapi.stock_api.exception.ApiKeyMissingException;
 import com.hyun.stockapi.stock_api.service.StockService;
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -26,24 +28,22 @@ public class StockController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StockResponseDto> getStockPrices(
+            @Valid @ModelAttribute StockRequestDto requestDto,
             @RequestParam(required = false) String apikey,
-            @RequestHeader(value ="x-api-key", required = false ) String headerApiKey,
-            @RequestParam String companyCode,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate tradeDate
-            ) {
-        String key =(headerApiKey != null) ? headerApiKey : apikey;
+            @RequestHeader(value = "x-api-key", required = false) String headerApiKey
+    ) {
+        String key = (headerApiKey != null) ? headerApiKey : apikey;
 
-        //api 에러
-        if(key ==null || key.isBlank()){
+        // API Key 검증
+        if (key == null || key.isBlank()) {
             throw new ApiKeyMissingException("API Key가 누락되었습니다. (쿼리파라미터 apikey 또는 헤더 x-api-key 사용)");
         }
         if (!VALID_API_KEY.equals(key)) {
             throw new ApiKeyInvalidException("유효하지 않은 API Key입니다.");
         }
+        LocalDate tradeDate = LocalDate.parse(requestDto.getTradeDate());
 
-
-        return stockService.getStockPrices(companyCode,tradeDate);
-
-
+        return stockService.getStockPrices(requestDto.getCompanyCode(), tradeDate);
     }
+
 }

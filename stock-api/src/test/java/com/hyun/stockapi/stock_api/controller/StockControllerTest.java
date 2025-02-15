@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StockController.class)
@@ -58,7 +59,8 @@ class StockControllerTest {
                         .param("tradeDate", "2020-01-01")
                         .param("apikey", VALID_API_KEY))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("companyCode 파라미터가 누락되었습니다."));
+                .andExpect(jsonPath("$.companyCode").value("종목 코드(companyCode)는 필수 입력값입니다."))
+                .andDo(print());
     }
 
     @Test
@@ -70,7 +72,7 @@ class StockControllerTest {
                 .param("tradeDate","202001-01")
                 .param("apikey",VALID_API_KEY))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("날짜 형식이 올바르지 않습니다. (yyyy-MM-dd 형식으로 입력해주세요)"));
+                .andExpect(jsonPath("$.tradeDate").value("날짜 형식이 올바르지 않습니다. (yyyy-MM-dd 형식으로 입력해주세요)"));
     }
     @Test
     @DisplayName("5) 정상 호출 => 200 OK")
