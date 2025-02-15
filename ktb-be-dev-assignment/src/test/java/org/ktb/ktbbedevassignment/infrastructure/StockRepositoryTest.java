@@ -1,5 +1,6 @@
 package org.ktb.ktbbedevassignment.infrastructure;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,15 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_COMPANY_CODE;
+import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_COMPANY_NAME;
+import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_OTHER_COMPANY_CODE;
+import static org.ktb.ktbbedevassignment.infrastructure.CompanyTestFixture.TEST_OTHER_COMPANY_NAME;
 import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_CLOSING_PRICE;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_COMPANY_CODE;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_COMPANY_NAME;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_OTHER_COMPANY_CODE;
-import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_OTHER_COMPANY_NAME;
 import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.TEST_TRADE_DATE;
 import static org.ktb.ktbbedevassignment.infrastructure.StockTestFixture.plusDay;
 
