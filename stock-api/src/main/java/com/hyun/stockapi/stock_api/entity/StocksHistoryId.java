@@ -5,11 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class StocksHistoryId implements Serializable {
     private String companyCode;
-    private String tradeDate;
+    private LocalDate tradeDate;
 }

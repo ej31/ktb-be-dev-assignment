@@ -7,12 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale;
+
 
 @Repository
 public interface StocksHistoryRepository extends JpaRepository<StocksHistory, StocksHistoryId> {
 
-    List<StocksHistory> findByCompanyCodeAndTradeDateBetween(
+    List<StocksHistory> findByCompanyCodeAndTradeDate(
             String companyCode,
             LocalDate tradeDate
     );

@@ -25,13 +25,13 @@ public class StockService {
     public List<StockResponseDto> getStockPrices(String companyCode, LocalDate tradeDate){
         Company company =companyRepository.findById(companyCode).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업 코드: "+ companyCode));
 
-        List<StocksHistory> historyList = stocksHistoryRepository.findByCompanyCodeAndTradeDateBetween(companyCode,tradeDate);
+        List<StocksHistory> historyList = stocksHistoryRepository.findByCompanyCodeAndTradeDate(companyCode,tradeDate);
 
         return historyList.stream()
                 .map(h -> StockResponseDto.builder()
                         .companyName(company.getCompanyName())
                         .tradeDate(h.getTradeDate().toString())
-                        .closingPrice((long) h.getClosePrice())
+                        .closingPrice(h.getClosePrice())
                         .build())
                 .toList();
     }
