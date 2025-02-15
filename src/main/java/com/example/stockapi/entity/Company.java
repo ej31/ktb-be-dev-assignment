@@ -10,13 +10,10 @@ import lombok.Setter;
 @Table(name = "company")
 public class Company {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "company_code", nullable = false, unique = true)
+    @Column(name = "company_code", length = 10, nullable = false)
     private String companyCode;
 
-    @Column(name = "company_name", nullable = false)
+    @Column(name = "company_name", length = 100, nullable = false)
     private String companyName;
 }
 

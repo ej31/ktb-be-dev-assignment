@@ -31,8 +31,15 @@ public class StockService {
 
         return stockHistoryRepository.findByCompanyCodeAndTradeDate(companyCode, startDate, endDate)
                 .stream()
-                .map(stock -> new StockResponseDTO(company.getCompanyName(), stock.getTradeDate(), stock.getClosingPrice()))
+                .map(stock -> new StockResponseDTO(
+                        company.getCompanyName(),
+                        stock.getTradeDate(),
+                        stock.getOpenPrice(),
+                        stock.getHighPrice(),
+                        stock.getLowPrice(),
+                        stock.getClosePrice(),
+                        stock.getVolume()
+                ))
                 .collect(Collectors.toList());
     }
 }
-

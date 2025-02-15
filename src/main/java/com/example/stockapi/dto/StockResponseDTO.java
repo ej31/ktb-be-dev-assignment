@@ -10,5 +10,9 @@ import java.time.LocalDate;
 public class StockResponseDTO {
     private String companyName;
     private LocalDate tradeDate;
+    private Float openPrice;
+    private Float highPrice;
+    private Float lowPrice;
     private Float closingPrice;
+    private Float volume;
 }
