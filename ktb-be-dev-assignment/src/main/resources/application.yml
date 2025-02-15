@@ -1,1 +1,12 @@
-spring.application.name: ktb-be-dev-assignment
+spring:
+  application.name: ktb-be-dev-assignment
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 3 # (필수) 최대 커넥션 풀 사이즈 (최대 5개 제한)
+      idle-timeout: 10000  # (선택) 10초 동안 사용되지 않으면 커넥션 제거
+      max-lifetime: 300000  # (선택) 커넥션의 최대 생존 시간 (5분)
+      connection-timeout: 30000  # (선택) 커넥션 획득 타임아웃 (30초)
