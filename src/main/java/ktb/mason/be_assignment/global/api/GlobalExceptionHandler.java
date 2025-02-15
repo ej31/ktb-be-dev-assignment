@@ -1,21 +1,27 @@
 package ktb.mason.be_assignment.global.api;
 
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<BaseResponse<Void>> runtimeExceptionHandler(RuntimeException e) {
+		log.warn(500 + " " + e.getMessage());
+
 		return ResponseEntity
 				.status(500)
 				.body( BaseResponse.error(ErrorResponse.of(e)));
 	}
 	@ExceptionHandler(ApiException.class)
 	public ResponseEntity<BaseResponse<Void>> apiExceptionHandler(ApiException e) {
+		log.warn(e.getStatus().getStatusCode() + " " + e.getStatus().getMessage());
+
 		return ResponseEntity
 				.status(e.getStatus().getStatusCode())
 				.body(BaseResponse.error(ErrorResponse.of(e)));
@@ -23,6 +29,8 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ConstraintViolationException.class)
 	public ResponseEntity<BaseResponse<Void>> constraintViolationExceptionHandler(ConstraintViolationException e) {
+		log.warn(400 + " " + e.getMessage());
+
 		return ResponseEntity
 				.status(400)
 				.body(BaseResponse.error(ErrorResponse.of(e)));
