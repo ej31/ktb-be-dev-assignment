@@ -36,6 +36,7 @@ public enum AppHttpStatus {
      */
     NOT_FOUND(404, HttpStatus.NOT_FOUND, "존재하지 않는 리소스입니다."),
     NOT_FOUND_ENDPOINT(404, HttpStatus.NOT_FOUND, "존재하지 않는 엔드포인트입니다."),
+    NOT_FOUND_STOCK_INFO(404, HttpStatus.NOT_FOUND, "해당 기업의 종가 정보가 존재하지 않습니다."),
 
     /**
      * 500 : 서버 내부에서 에러가 발생함

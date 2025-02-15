@@ -2,7 +2,10 @@ package ktb.mason.be_assignment.domain.stock.service;
 
 import ktb.mason.be_assignment.domain.stock.controller.port.StockService;
 import ktb.mason.be_assignment.domain.stock.controller.response.StockInfoResponse;
+import ktb.mason.be_assignment.domain.stock.domain.StockInfo;
 import ktb.mason.be_assignment.domain.stock.service.port.StockRepository;
+import ktb.mason.be_assignment.global.api.ApiException;
+import ktb.mason.be_assignment.global.api.AppHttpStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,9 @@ public class StockServiceImpl implements StockService {
     @Override
     @Transactional(readOnly = true)
     public StockInfoResponse getStockInfoByCompanyCode(String companyCode, String startDate, String endDate) {
-        return StockInfoResponse.from(stockRepository.findAllByCompanyCode(companyCode, startDate, endDate));
+        StockInfo stockInfo = stockRepository.findStockInfoByCompanyAndDateRange(companyCode, startDate, endDate)
+                .orElseThrow(() -> new ApiException(AppHttpStatus.NOT_FOUND_STOCK_INFO));
+
+        return StockInfoResponse.from(stockInfo);
     }
 }
