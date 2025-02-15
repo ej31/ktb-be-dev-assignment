@@ -33,12 +33,14 @@ public class StockController {
             ) {
         String key =(headerApiKey != null) ? headerApiKey : apikey;
 
+        //api 에러
         if(key ==null || key.isBlank()){
             throw new ApiKeyMissingException("API Key가 누락되었습니다. (쿼리파라미터 apikey 또는 헤더 x-api-key 사용)");
         }
         if (!VALID_API_KEY.equals(key)) {
             throw new ApiKeyInvalidException("유효하지 않은 API Key입니다.");
         }
+
 
         return stockService.getStockPrices(companyCode,tradeDate);
 
