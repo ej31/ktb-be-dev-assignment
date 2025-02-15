@@ -34,11 +34,6 @@ public class StockController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Invalid API Key"));
         }
 
-        // 입력 파라미터 유효성 검사
-        if (companyCode.isBlank() || startDate.isBlank() || endDate.isBlank()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Missing required parameters"));
-        }
-
         try {
              StockResponseDto response = stockService.getStockPrices(companyCode, LocalDate.parse(startDate), LocalDate.parse(endDate));
              return ResponseEntity.ok(response);
