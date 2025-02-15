@@ -33,7 +33,7 @@ public class StockController {
         String apiKey = (apiKeyHeader != null) ? apiKeyHeader : apiKeyParam;
 
         if (!VALID_API_KEY.equals(apiKey)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.failure("invalid api key"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.failure("invalid api key", 403));
         }
 
         StockResponseDto response = stockService.getStockPrices(
