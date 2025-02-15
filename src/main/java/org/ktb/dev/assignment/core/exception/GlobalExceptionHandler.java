@@ -11,8 +11,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +37,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * 유효성 검증(@Valid) 예외 처리
-     * NotNull은 우선 무시!
      */
     @Override
     @NonNull
@@ -46,6 +48,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.error("[ValidationException] {}", ex.getMessage(), ex);
         return handleValidationExceptionInternal(ex);
+    }
+
+    /**
+     * 날짜 형식 변환 실패 예외 처리
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex) {
+        log.error("[DateFormatException] {}", ex.getMessage(), ex);
+
+        // 날짜 형식 에러인 경우에만 특정 메시지 처리
+        if (LocalDate.class.isAssignableFrom(ex.getRequiredType())) {
+            return handleExceptionInternal(CustomErrorCode.INVALID_DATE_FORMAT);
+        }
+
+        return handleExceptionInternal(CustomErrorCode.INVALID_INPUT_VALUE);
+    }
+
+    /**
+     * 날짜 파싱 실패 예외 처리
+     */
+    @ExceptionHandler(DateTimeParseException.class)
+    protected ResponseEntity<Object> handleDateTimeParseException(
+            DateTimeParseException ex) {
+        log.error("[DateParseException] {}", ex.getMessage(), ex);
+        return handleExceptionInternal(CustomErrorCode.INVALID_DATE_FORMAT);
     }
 
     /**
