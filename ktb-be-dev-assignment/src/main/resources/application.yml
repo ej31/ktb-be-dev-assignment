@@ -10,3 +10,5 @@ spring:
       idle-timeout: 10000  # (선택) 10초 동안 사용되지 않으면 커넥션 제거
       max-lifetime: 300000  # (선택) 커넥션의 최대 생존 시간 (5분)
       connection-timeout: 30000  # (선택) 커넥션 획득 타임아웃 (30초)
+
+api.key: ${API_KEY}
