@@ -7,5 +7,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface StockHistoryRepository extends JpaRepository<StockHistory, Long> {
+    // 날짜 범위로 주가조회
     List<StockHistory> findByCompanyCodeAndTradeDate(String companyCode, LocalDate startDate, LocalDate endDate);
 }
