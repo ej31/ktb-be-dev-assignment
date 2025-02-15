@@ -3,6 +3,7 @@ package org.ktb.ktbbedevassignment.fixture;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.ktb.ktbbedevassignment.dto.StockInfoDto;
 import static org.ktb.ktbbedevassignment.fixture.CompanyTestFixture.TEST_COMPANY_NAME;
 
@@ -34,5 +35,21 @@ public class StockTestFixture {
             stockInfoDtoList.add(createTestStockInfoDto(TEST_COMPANY_NAME, plusDay(TEST_TRADE_DATE, i), TEST_CLOSING_PRICE));
         }
         return stockInfoDtoList;
+    }
+
+    private static final List<String> INVALID_DATES = List.of(
+            "25-02-20",
+            "2021-02-25T00:00:00",
+            "2021-02-25T00:00:00Z",
+            "2021-02-25 00:00:00",
+            "2021-02-25 00:00:00.000",
+            "2021-02-25 00:00:00.000Z",
+            "2021-02-25 00:00:00.000+09:00",
+            "2021-02-25 00:00:00.000+0900",
+            "2021-02-25 00:00:00.000+09"
+    );
+
+    public static Stream<String> provideInvalidDates() {
+        return INVALID_DATES.stream();
     }
 }
