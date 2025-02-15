@@ -20,7 +20,7 @@ tags:
     description: 주식 데이터를 조회하는 API
 
 paths:
-  /api/v1/stockhistory:
+  /api/v1/stock/history:
     get:
       tags:
         - developers

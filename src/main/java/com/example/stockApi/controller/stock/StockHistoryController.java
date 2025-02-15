@@ -14,7 +14,7 @@ import java.util.List;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/api/v1/stocks")
+@RequestMapping("/api/v1/stock/history")
 public class StockHistoryController {
     private final StockHistoryService stockHistoryService;
     @Autowired
