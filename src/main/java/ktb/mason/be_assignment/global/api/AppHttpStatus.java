@@ -18,6 +18,8 @@ public enum AppHttpStatus {
      */
     BAD_REQUEST(400, HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     FAILED_VALIDATION(400, HttpStatus.BAD_REQUEST, "유효성 검사에 실패하였습니다."),
+    BLANK_NOT_ALLOWED(400, HttpStatus.BAD_REQUEST, "공백은 입력할 수 없습니다."),
+    INVALID_DATE_FORMAT(400, HttpStatus.BAD_REQUEST, "날짜 형식이 올바르지 않습니다. yyyy-MM-dd 형식이어야 합니다."),
 
     /**
      * 401 : 인증된 사용자가 아님
