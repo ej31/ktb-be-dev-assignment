@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static ktb.mason.be_assignment.domain.stock.infrastructure.entity.QCompanyEntity.companyEntity;
 import static ktb.mason.be_assignment.domain.stock.infrastructure.entity.QStockHistoryEntity.stockHistoryEntity;
@@ -26,7 +27,7 @@ public class StockRepositoryImpl implements StockRepository {
     final JPAQueryFactory query;
 
     @Override
-    public StockInfo findAllByCompanyCode(String companyCode, String startDate, String endDate) {
+    public Optional<StockInfo> findStockInfoByCompanyAndDateRange(String companyCode, String startDate, String endDate) {
 
         List<Tuple> results = query
                 .select(stockHistoryEntity, companyEntity)
@@ -36,9 +37,9 @@ public class StockRepositoryImpl implements StockRepository {
                 .where(byCompanyCodeAndDate(companyCode, startDate, endDate))
                 .fetch();
 
-        // 조회 결과가 없는 경우 null 반환
+        // 조회 결과가 없는 경우 Optional.empty() 반환
         if (results.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
 
         Company company = results.get(0).get(companyEntity).toModel();
@@ -47,10 +48,10 @@ public class StockRepositoryImpl implements StockRepository {
                 .map(tuple -> tuple.get(stockHistoryEntity).toModel())
                 .toList();
 
-        return StockInfo.builder()
+        return Optional.of(StockInfo.builder()
                 .company(company)
                 .stocks(stockHistories)
-                .build();
+                .build());
     }
 
     BooleanExpression byCompanyCodeAndDate(String companyCode, String startDate, String endDate) {
