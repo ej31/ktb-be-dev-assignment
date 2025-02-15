@@ -3,7 +3,7 @@ package org.ktb.ktbbedevassignment.application;
 import java.util.List;
 import org.ktb.ktbbedevassignment.exception.CompanyNotFoundException;
 import org.ktb.ktbbedevassignment.infrastructure.CompanyRepository;
-import org.ktb.ktbbedevassignment.infrastructure.StockInfoDto;
+import org.ktb.ktbbedevassignment.dto.StockInfoDto;
 import org.ktb.ktbbedevassignment.infrastructure.StockRepository;
 import org.springframework.stereotype.Service;
 

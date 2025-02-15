@@ -3,7 +3,7 @@ package org.ktb.ktbbedevassignment.fixture;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.ktb.ktbbedevassignment.infrastructure.StockInfoDto;
+import org.ktb.ktbbedevassignment.dto.StockInfoDto;
 import static org.ktb.ktbbedevassignment.fixture.CompanyTestFixture.TEST_COMPANY_CODE;
 
 public class StockTestFixture {
