@@ -17,6 +17,7 @@ repositories {
 	mavenCentral()
 }
 
+// 호환되는 버전 확인 : https://docs.spring.io/spring-boot/appendix/dependency-versions/coordinates.html#
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
