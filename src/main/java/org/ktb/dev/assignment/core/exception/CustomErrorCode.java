@@ -19,6 +19,7 @@ public enum CustomErrorCode implements ErrorCode {
     INVALID_PARAMETER_VALUE(400, "E002", "잘못된 파라미터 값입니다."),
     MISSING_API_KEY(400, "E003", "API 키가 누락되었습니다."),
     INVALID_REQUEST_BODY(400, "E004", "잘못된 요청 본문입니다."),
+    INVALID_INPUT_VALUE(400, "E005", "잘못된 입력값입니다."),
 
     // 403 Forbidden
     INVALID_API_KEY(403, "E101", "유효하지 않은 API 키입니다."),
