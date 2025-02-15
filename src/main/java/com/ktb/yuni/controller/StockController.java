@@ -3,7 +3,6 @@ package com.ktb.yuni.controller;
 import com.ktb.yuni.dto.ApiResponse;
 import com.ktb.yuni.dto.StockResponseDto;
 import com.ktb.yuni.service.StockService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +31,17 @@ public class StockController {
     ) {
         String apiKey = (apiKeyHeader != null) ? apiKeyHeader : apiKeyParam;
 
-        if (!VALID_API_KEY.equals(apiKey)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.failure("invalid api key", 403));
-        }
+        validateApiKey(apiKey);
 
         StockResponseDto response = stockService.getStockPrices(
                 companyCode, LocalDate.parse(startDate), LocalDate.parse(endDate)
         );
         return ResponseEntity.ok(ApiResponse.success("주식 데이터 조회 성공", response));
+    }
+
+    private void validateApiKey(String apiKey) {
+        if (!VALID_API_KEY.equals(apiKey)) {
+            throw new IllegalArgumentException("Invalid API key");
+        }
     }
 }
