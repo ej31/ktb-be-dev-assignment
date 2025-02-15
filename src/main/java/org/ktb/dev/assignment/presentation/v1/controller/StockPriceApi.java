@@ -9,6 +9,7 @@ import org.ktb.dev.assignment.core.response.SuccessResponse;
 import org.ktb.dev.assignment.presentation.v1.dto.GetStockByCompanyCodeResponse;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 
 @Tag(name = "주가 조회 API", description = "주가 정보를 조회")
+@Validated
 public interface StockPriceApi {
 
     @Operation(summary = "기업의 주가 조회 API", description = "기간 내 특정 기업의 주가 정보를 조회")

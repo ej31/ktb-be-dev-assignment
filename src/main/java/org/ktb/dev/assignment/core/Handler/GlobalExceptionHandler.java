@@ -7,12 +7,11 @@ import org.ktb.dev.assignment.core.exception.BusinessException;
 import org.ktb.dev.assignment.core.exception.CustomErrorCode;
 import org.ktb.dev.assignment.core.exception.ErrorCode;
 import org.ktb.dev.assignment.core.response.ErrorResponse;
-import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -24,144 +23,148 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * 전역 예외 처리를 담당하는 핸들러
- */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private static final String LOG_FORMAT = "[{}] {}";
 
     /**
      * 비즈니스 예외 처리
      */
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<Object> handleBusinessException(BusinessException ex) {
-        log.error("[BusinessException] {}", ex.getMessage(), ex);
-        return handleExceptionInternal(ex.getErrorCode(), ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
+        log.error(LOG_FORMAT, "BusinessException", ex.getMessage(), ex);
+        return createErrorResponse(
+                ex.getErrorCode(),
+                ErrorResponse.of(ex.getErrorCode(), ex.getMessage())
+        );
     }
 
     /**
-     * 유효성 검증(@Valid) 예외 처리
+     * 필수값 누락 예외처리
      */
     @Override
-    @NonNull
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            @NonNull MethodArgumentNotValidException ex,
-            @NonNull HttpHeaders headers,
-            @NonNull HttpStatusCode status,
-            @NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
 
-        log.error("[ValidationException] {}", ex.getMessage(), ex);
-        return handleValidationExceptionInternal(ex);
+        log.error(LOG_FORMAT, "MissingParameterException", ex.getMessage(), ex);
+
+        List<ErrorResponse.ValidationError> validationErrors = List.of(
+                ErrorResponse.ValidationError.of(
+                        ex.getParameterName(),
+                        String.format("필수 파라미터 %s가 누락되었습니다", ex.getParameterName()),
+                        null
+                )
+        );
+
+        return createErrorResponse(
+                CustomErrorCode.INVALID_INPUT_VALUE,
+                ErrorResponse.of(CustomErrorCode.INVALID_INPUT_VALUE, validationErrors)
+        );
     }
 
     /**
-     * 날짜 형식 변환 실패 예외 처리
+     * API 검증 관련 모든 예외를 처리하는 통합 핸들러
      */
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(
-            MethodArgumentTypeMismatchException ex) {
-        log.error("[DateFormatException] {}", ex.getMessage(), ex);
+    @ExceptionHandler({
+            ConstraintViolationException.class,
+            DateTimeParseException.class,
+            MethodArgumentTypeMismatchException.class
+    })
+    protected ResponseEntity<ErrorResponse> handleValidationExceptions(Exception ex) {
+        log.error(LOG_FORMAT, "ValidationException", ex.getMessage(), ex);
 
-        // 날짜 형식 에러인 경우에만 특정 메시지 처리
-        if (LocalDate.class.isAssignableFrom(ex.getRequiredType())) {
-            return handleExceptionInternal(CustomErrorCode.INVALID_DATE_FORMAT);
-        }
+        List<ErrorResponse.ValidationError> validationErrors;
 
-        return handleExceptionInternal(CustomErrorCode.INVALID_INPUT_VALUE);
-    }
+        if (ex instanceof ConstraintViolationException cve) {
+            validationErrors = cve.getConstraintViolations()
+                    .stream()
+                    .map(violation -> ErrorResponse.ValidationError.of(
+                            extractFieldName(violation.getPropertyPath().toString()),
+                            violation.getMessage(),
+                            violation.getInvalidValue()
+                    ))
+                    .collect(Collectors.toList());
+        } else if (ex instanceof MethodArgumentTypeMismatchException matme) {
+            String field = matme.getName();
+            String message = matme.getRequiredType() != null
+                    && LocalDate.class.isAssignableFrom(matme.getRequiredType())
+                    ? "날짜 형식은 'yyyy-MM-dd'이어야 합니다"
+                    : "잘못된 형식입니다";
 
-    /**
-     * 날짜 파싱 실패 예외 처리
-     */
-    @ExceptionHandler(DateTimeParseException.class)
-    protected ResponseEntity<Object> handleDateTimeParseException(
-            DateTimeParseException ex) {
-        log.error("[DateParseException] {}", ex.getMessage(), ex);
-        return handleExceptionInternal(CustomErrorCode.INVALID_DATE_FORMAT);
-    }
-
-    /**
-     * Bean Validation 관련 예외 처리 (@NotNull, @Past 등)
-     */
-    @ExceptionHandler(ConstraintViolationException.class)
-    protected ResponseEntity<Object> handleConstraintViolation(
-            ConstraintViolationException ex) {
-        log.error("[ConstraintViolationException] {}", ex.getMessage(), ex);
-
-        List<ErrorResponse.ValidationError> validationErrorList = ex.getConstraintViolations()
-                .stream()
-                .map(violation -> ErrorResponse.ValidationError.of(
-                        extractFieldName(violation.getPropertyPath().toString()),
-                        violation.getMessage(),
-                        violation.getInvalidValue()
-                ))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.status(CustomErrorCode.INVALID_INPUT_VALUE.getStatus())
-                .body(ErrorResponse.of(CustomErrorCode.INVALID_INPUT_VALUE, validationErrorList));
-    }
-
-    /**
-     * 날짜 형식 변환 실패 예외 처리 - 메시지 개선
-     */
-    @Override
-    protected ResponseEntity<Object> handleTypeMismatch(
-            @NonNull TypeMismatchException ex,
-            @NonNull HttpHeaders headers,
-            @NonNull HttpStatusCode status,
-            @NonNull WebRequest request) {
-
-        log.error("[TypeMismatchException] {}", ex.getMessage(), ex);
-
-        if (ex.getRequiredType() != null && LocalDate.class.isAssignableFrom(ex.getRequiredType())) {
-            List<ErrorResponse.ValidationError> validationErrorList = List.of(
+            validationErrors = List.of(
+                    ErrorResponse.ValidationError.of(field, message, matme.getValue())
+            );
+        } else if (ex instanceof DateTimeParseException dtpe) {
+            validationErrors = List.of(
                     ErrorResponse.ValidationError.of(
-                            ex.getPropertyName(),
+                            "date",
                             "날짜 형식은 'yyyy-MM-dd'이어야 합니다",
-                            ex.getValue()
+                            dtpe.getParsedString()
                     )
             );
-            return ResponseEntity.status(CustomErrorCode.INVALID_DATE_FORMAT.getStatus())
-                    .body(ErrorResponse.of(CustomErrorCode.INVALID_DATE_FORMAT, validationErrorList));
+        } else {
+            validationErrors = List.of(
+                    ErrorResponse.ValidationError.of(
+                            "unknown",
+                            "잘못된 입력값입니다",
+                            null
+                    )
+            );
         }
 
-        return handleExceptionInternal(CustomErrorCode.INVALID_INPUT_VALUE);
+        return (ResponseEntity) createErrorResponse(
+                CustomErrorCode.INVALID_INPUT_VALUE,
+                ErrorResponse.of(CustomErrorCode.INVALID_INPUT_VALUE, validationErrors)
+        );
+    }
+
+    /**
+     * @Valid, @Validated 어노테이션 검증 실패 처리
+     */
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
+
+        log.error(LOG_FORMAT, "MethodArgumentNotValidException", ex.getMessage(), ex);
+
+        List<ErrorResponse.ValidationError> validationErrors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(ErrorResponse.ValidationError::of)
+                .collect(Collectors.toList());
+
+        return createErrorResponse(
+                CustomErrorCode.INVALID_INPUT_VALUE,
+                ErrorResponse.of(CustomErrorCode.INVALID_INPUT_VALUE, validationErrors)
+        );
     }
 
     /**
      * 예상치 못한 예외 처리
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllException(Exception ex) {
-        log.error("[UnexpectedException] {}", ex.getMessage(), ex);
-        return handleExceptionInternal(CustomErrorCode.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleAllException(Exception ex) {
+        log.error(LOG_FORMAT, "UnexpectedException", ex.getMessage(), ex);
+        return (ResponseEntity) createErrorResponse(
+                CustomErrorCode.INTERNAL_SERVER_ERROR,
+                ErrorResponse.of(CustomErrorCode.INTERNAL_SERVER_ERROR)
+        );
     }
 
-    // 에러 응답 생성
-    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode) {
-        return ResponseEntity.status(errorCode.getStatus())
-                .body(ErrorResponse.of(errorCode));
-    }
-    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode, String message) {
-        return ResponseEntity.status(errorCode.getStatus())
-                .body(ErrorResponse.of(errorCode, message));
+    private <T> ResponseEntity<T> createErrorResponse(ErrorCode errorCode, T body) {
+        return ResponseEntity
+                .status(errorCode.getStatus())
+                .body(body);
     }
 
-    // 유효성 검증 에러 응답 생성
-    private ResponseEntity<Object> handleValidationExceptionInternal(BindException bindException) {
-        List<ErrorResponse.ValidationError> validationErrorList = bindException
-                .getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(ErrorResponse.ValidationError::of)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.status(CustomErrorCode.INVALID_INPUT_VALUE.getStatus())
-                .body(ErrorResponse.of(CustomErrorCode.INVALID_INPUT_VALUE, validationErrorList));
-    }
-
-    // 필드명 추출 헬퍼 메소드
     private String extractFieldName(String propertyPath) {
         String[] parts = propertyPath.split("\\.");
         return parts[parts.length - 1];
