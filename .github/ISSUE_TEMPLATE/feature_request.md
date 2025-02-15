@@ -4,6 +4,7 @@ about: Suggest an idea for this project
 title: ''
 labels: ''
 assignees: ''
+
 ---
 
 ## 🚀이슈 제목
@@ -16,4 +17,4 @@ assignees: ''
 
 ## ☑️To-Do
 <!-- 해야 할 일들을 적어주세요 -->
-- [ ] 
+- [ ]
