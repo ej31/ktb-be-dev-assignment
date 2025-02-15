@@ -29,7 +29,7 @@ public class StockService {
             throw new IllegalArgumentException("Invalid company code");
         }
 
-        return stockHistoryRepository.findByCompanyCodeAndTradeDate(companyCode, startDate, endDate)
+        return stockHistoryRepository.findByCompanyCodeAndTradeDateBetween(companyCode, startDate, endDate)
                 .stream()
                 .map(stock -> new StockResponseDTO(
                         company.getCompanyName(),

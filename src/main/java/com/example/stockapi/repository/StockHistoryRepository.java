@@ -8,6 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface StockHistoryRepository extends JpaRepository<StockHistory, StockHistoryId> {
-    List<StockHistory> findByCompanyCodeAndTradeDate(String companyCode, LocalDate startDate, LocalDate endDate);
+    List<StockHistory> findByCompanyCodeAndTradeDateBetween(String companyCode, LocalDate startDate, LocalDate endDate);
 }
 
