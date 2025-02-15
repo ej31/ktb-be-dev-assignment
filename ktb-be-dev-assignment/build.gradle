@@ -21,6 +21,11 @@ dependencies {
 	// Springboot starter
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	// etc
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.2'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2' // LocalDateTime parsing 을 위해 추가
 
 	// DB
 	runtimeOnly 'com.mysql:mysql-connector-j'
