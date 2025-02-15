@@ -5,7 +5,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /*
- * 프로트엔드 포트에 맞게 CORS 설정 수정 필요 !
+ * !!할일 : 프로트엔드 포트에 맞게 CORS 설정 수정 필요 !
  * author : hyuk.kim (김상혁)
  */
 @Configuration
