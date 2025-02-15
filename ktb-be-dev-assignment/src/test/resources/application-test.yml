@@ -1,0 +1,10 @@
+spring:
+  application.name: ktb-be-dev-assignment
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    sql:
+      init:
+        mode: always  # 테스트 실행 시 schema.sql 적용

@@ -18,11 +18,17 @@ repositories {
 }
 
 dependencies {
+	// Springboot starter
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// DB
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'com.h2database:h2:2.3.232'
 }
 
 tasks.named('test') {
