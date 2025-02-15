@@ -3,6 +3,7 @@ package com.ktb.yuni.service;
 import com.ktb.yuni.domain.Company;
 import com.ktb.yuni.domain.StocksHistory;
 import com.ktb.yuni.dto.StockResponseDto;
+import com.ktb.yuni.exception.CompanyNotFoundException;
 import com.ktb.yuni.repository.CompanyRepository;
 import com.ktb.yuni.repository.StocksHistoryRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class StockService {
     public StockResponseDto getStockPrices(String companyCode, LocalDate startDate, LocalDate endDate) {
         // 회사 조회
         Company company = companyRepository.findByCompanyCode(companyCode)
-                .orElseThrow(()->new RuntimeException("company not found"));
+                .orElseThrow(()->new CompanyNotFoundException(companyCode));
 
         // 주식 데이터 조회
         List<StocksHistory> stocks = stocksHistoryRepository
