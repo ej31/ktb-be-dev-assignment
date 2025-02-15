@@ -41,4 +41,16 @@ class StockControllerTest {
                 .andExpect(jsonPath("$.error").value("API Key가 누락되었습니다. (쿼리파라미터 apikey 또는 헤더 x-api-key 사용)"));
     }
 
+    @Test
+    @DisplayName("2) 잘못된 API Key 403 Forbidden")
+    void testInvalidApiKey() throws Exception{
+
+        mockMvc.perform(get("/api/v1/stocks")
+                .param("companyCode","AAPL")
+                .param("tradeDate","2020-01-01")
+                .param("apikey","invalid-key"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("유효하지 않은 API Key입니다."));
+    }
+
 }

@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String,String>> handleInvalidApiKey(ApiKeyInvalidException ex) {
         Map<String,String> errorResponse = new HashMap<>();
         errorResponse.put("error",ex.getMessage());
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
     // 요청 파라미터 잘못됨 → 400
@@ -67,6 +67,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleException(Exception ex) {
         Map<String,String> errorResponse = new HashMap<>();
         errorResponse.put("error",ex.getMessage());
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }
