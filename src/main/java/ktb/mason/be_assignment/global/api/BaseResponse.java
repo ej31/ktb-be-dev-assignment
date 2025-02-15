@@ -7,6 +7,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * 응답 설계 이유
+ * 1. 일관성 있는 응답 구조
+ * 응답이 성공/실패 여부와 관계없이 동일한 구조를 유지할 수 있도록 하였습니다.
+ * 2. 클라이언트 고려
+ * status에 따라서 응답을 쉽게 파싱할 수 있습니다.
+ */
+
+
 @Getter
 @Builder
 @AllArgsConstructor
