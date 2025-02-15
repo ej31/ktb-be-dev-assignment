@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -33,6 +34,15 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity
 				.status(400)
+				.body(BaseResponse.error(ErrorResponse.of(e)));
+	}
+
+	@ExceptionHandler(NoResourceFoundException.class)
+	public ResponseEntity<BaseResponse<Void>> noHandlerFoundExceptionHandler(NoResourceFoundException e) {
+		log.warn(404 + " " + e.getMessage());
+
+		return ResponseEntity
+				.status(404)
 				.body(BaseResponse.error(ErrorResponse.of(e)));
 	}
 }

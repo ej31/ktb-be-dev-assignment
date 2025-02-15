@@ -35,6 +35,7 @@ public enum AppHttpStatus {
      * 404 : 응답할 리소스가 없음
      */
     NOT_FOUND(404, HttpStatus.NOT_FOUND, "존재하지 않는 리소스입니다."),
+    NOT_FOUND_ENDPOINT(404, HttpStatus.NOT_FOUND, "존재하지 않는 엔드포인트입니다."),
 
     /**
      * 500 : 서버 내부에서 에러가 발생함
