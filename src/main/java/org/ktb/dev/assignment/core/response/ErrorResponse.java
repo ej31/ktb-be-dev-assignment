@@ -27,15 +27,25 @@ public class ErrorResponse {
         return new ErrorResponse(new ErrorInfo(errorCode.getCode(), errorCode.getMessage(), validationErrorList));
     }
 
-    public static ErrorResponse of(ErrorCode errorCode, String additionalMessage) {
-        return new ErrorResponse(new ErrorInfo(errorCode.getCode(),
-                errorCode.getMessage() + " : " + additionalMessage, null));
+    public static ErrorResponse of(ErrorCode errorCode, String message) {
+        return new ErrorResponse(new ErrorInfo(errorCode.getCode(), message, null));
     }
 
-    public record ValidationError(String field, String message) {
-
+    public record ValidationError(
+            String field,
+            String message,
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            Object rejectedValue
+    ) {
         public static ValidationError of(final FieldError fieldError) {
-            return new ValidationError(fieldError.getField(), fieldError.getDefaultMessage());
+            return new ValidationError(
+                    fieldError.getField(),
+                    fieldError.getDefaultMessage(),
+                    fieldError.getRejectedValue()
+            );
+        }
+        public static ValidationError of(String field, String message, Object rejectedValue) {
+            return new ValidationError(field, message, rejectedValue);
         }
     }
 

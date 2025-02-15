@@ -1,8 +1,13 @@
-package org.ktb.dev.assignment.core.exception;
+package org.ktb.dev.assignment.core.Handler;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.ktb.dev.assignment.core.exception.BusinessException;
+import org.ktb.dev.assignment.core.exception.CustomErrorCode;
+import org.ktb.dev.assignment.core.exception.ErrorCode;
 import org.ktb.dev.assignment.core.response.ErrorResponse;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +37,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Object> handleBusinessException(BusinessException ex) {
         log.error("[BusinessException] {}", ex.getMessage(), ex);
-        return handleExceptionInternal(ex.getErrorCode());
+        return handleExceptionInternal(ex.getErrorCode(), ex.getMessage());
     }
 
     /**
@@ -77,6 +82,54 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * Bean Validation 관련 예외 처리 (@NotNull, @Past 등)
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<Object> handleConstraintViolation(
+            ConstraintViolationException ex) {
+        log.error("[ConstraintViolationException] {}", ex.getMessage(), ex);
+
+        List<ErrorResponse.ValidationError> validationErrorList = ex.getConstraintViolations()
+                .stream()
+                .map(violation -> ErrorResponse.ValidationError.of(
+                        extractFieldName(violation.getPropertyPath().toString()),
+                        violation.getMessage(),
+                        violation.getInvalidValue()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(CustomErrorCode.INVALID_INPUT_VALUE.getStatus())
+                .body(ErrorResponse.of(CustomErrorCode.INVALID_INPUT_VALUE, validationErrorList));
+    }
+
+    /**
+     * 날짜 형식 변환 실패 예외 처리 - 메시지 개선
+     */
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(
+            @NonNull TypeMismatchException ex,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
+
+        log.error("[TypeMismatchException] {}", ex.getMessage(), ex);
+
+        if (ex.getRequiredType() != null && LocalDate.class.isAssignableFrom(ex.getRequiredType())) {
+            List<ErrorResponse.ValidationError> validationErrorList = List.of(
+                    ErrorResponse.ValidationError.of(
+                            ex.getPropertyName(),
+                            "날짜 형식은 'yyyy-MM-dd'이어야 합니다",
+                            ex.getValue()
+                    )
+            );
+            return ResponseEntity.status(CustomErrorCode.INVALID_DATE_FORMAT.getStatus())
+                    .body(ErrorResponse.of(CustomErrorCode.INVALID_DATE_FORMAT, validationErrorList));
+        }
+
+        return handleExceptionInternal(CustomErrorCode.INVALID_INPUT_VALUE);
+    }
+
+    /**
      * 예상치 못한 예외 처리
      */
     @ExceptionHandler(Exception.class)
@@ -90,6 +143,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(errorCode.getStatus())
                 .body(ErrorResponse.of(errorCode));
     }
+    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode, String message) {
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(ErrorResponse.of(errorCode, message));
+    }
 
     // 유효성 검증 에러 응답 생성
     private ResponseEntity<Object> handleValidationExceptionInternal(BindException bindException) {
@@ -102,5 +159,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.status(CustomErrorCode.INVALID_INPUT_VALUE.getStatus())
                 .body(ErrorResponse.of(CustomErrorCode.INVALID_INPUT_VALUE, validationErrorList));
+    }
+
+    // 필드명 추출 헬퍼 메소드
+    private String extractFieldName(String propertyPath) {
+        String[] parts = propertyPath.split("\\.");
+        return parts[parts.length - 1];
     }
 }

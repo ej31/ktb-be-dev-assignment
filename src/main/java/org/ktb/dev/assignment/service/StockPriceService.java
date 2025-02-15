@@ -26,7 +26,7 @@ public class StockPriceService {
     public GetStockByCompanyCodeResponse getStockByCompany(String companyCode, LocalDate startDate, LocalDate endDate) {
         String companyName = companyRepository.findCompanyNameByCode(companyCode)
                 .orElseThrow(() -> new BusinessException(
-                        CustomErrorCode.RESOURCE_NOT_FOUND,
+                        CustomErrorCode.COMPANY_NOT_FOUND,
                         String.format("기업 코드 %s를 찾을 수 없습니다.", companyCode)
                 ));
 
