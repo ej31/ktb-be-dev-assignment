@@ -24,6 +24,9 @@ public enum ErrorCode {
     NOT_FOUND_API(HttpStatus.NOT_FOUND.value(), "호출한 API가 존재하지 않습니다."),
     NOT_FOUND_STOCK_DATA(HttpStatus.NOT_FOUND.value(), "해당 기간의 주식 데이터를 찾을 수 없습니다."),
 
+    // 너무 많은 요청이 온 경우
+    TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS.value(), "API 호출은 10초에 10건만 가능합니다."),
+
     // 서버 오류
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 내부 오류가 발생했습니다.");
 
