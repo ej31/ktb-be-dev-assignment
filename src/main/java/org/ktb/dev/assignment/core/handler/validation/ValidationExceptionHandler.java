@@ -1,7 +1,6 @@
 package org.ktb.dev.assignment.core.handler.validation;
 
 import lombok.extern.slf4j.Slf4j;
-import org.ktb.dev.assignment.core.exception.CustomErrorCode;
 import org.ktb.dev.assignment.core.handler.validation.strategy.ConstraintViolationStrategy;
 import org.ktb.dev.assignment.core.handler.validation.strategy.DateTimeParseStrategy;
 import org.ktb.dev.assignment.core.handler.validation.strategy.DefaultExceptionStrategy;
@@ -9,7 +8,6 @@ import org.ktb.dev.assignment.core.handler.validation.strategy.ExceptionStrategy
 import org.ktb.dev.assignment.core.handler.validation.strategy.TypeMismatchStrategy;
 import org.ktb.dev.assignment.core.response.ErrorResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import jakarta.validation.ConstraintViolationException;
 import java.time.format.DateTimeParseException;
@@ -31,7 +29,6 @@ public class ValidationExceptionHandler {
         strategyMap.put(DateTimeParseException.class, new DateTimeParseStrategy());
     }
 
-    // ErrorResponse 대신 List<ValidationError> 반환하도록 수정
     public List<ErrorResponse.ValidationError> handleException(Exception ex) {
         return strategyMap
                 .getOrDefault(ex.getClass(), new DefaultExceptionStrategy())

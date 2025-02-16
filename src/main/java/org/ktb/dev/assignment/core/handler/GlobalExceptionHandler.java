@@ -53,11 +53,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleValidationExceptions(Exception ex) {
         log.error(LOG_FORMAT, "ValidationException", ex.getMessage(), ex);
 
-        /*
-        Required type: List<org.ktb.dev.assignment.core.response.ErrorResponse.ValidationError>
-        Provided: ErrorResponse
-
-         */
         List<ErrorResponse.ValidationError> validationErrors =
                 validationExceptionHandler.handleException(ex);
 
