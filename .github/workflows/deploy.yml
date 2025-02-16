@@ -1,0 +1,63 @@
+name: Deploy to EC2 with GHCR
+
+on:
+  push:
+    branches:
+      - feature
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/ktb-yuni-api
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build with Gradle
+        run: ./gradlew build -x test
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE_NAME_LOWER=$(echo "${IMAGE_NAME}" | tr '[:upper:]' '[:lower:]')
+          docker build -t $IMAGE_NAME_LOWER:latest .
+          docker push $IMAGE_NAME_LOWER:latest
+
+      - name: Set up SSH key
+        run: |
+          echo "${{ secrets.EC2_KEY }}" | base64 -d > yuni-key.pem
+          chmod 600 yuni-key.pem
+
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GHCR_PAT }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i yuni-key.pem $EC2_USER@$EC2_HOST <<EOF
+            # GHCR 로그인
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+
+            # 기존 컨테이너 중지 및 삭제
+            docker stop ktb-yuni-api || true
+            docker rm ktb-yuni-api || true
+
+            # 사용하지 않는 이미지 제거
+            docker image prune -af
+
+            # 최신 이미지 Pull 및 실행
+            docker pull $IMAGE_NAME:latest
+            docker run -d --name ktb-yuni-api \
+                -p 8080:8080 \
+                -v /home/ubuntu/application.properties:/app/application.properties \
+                ghcr.io/hyoon1129/ktb-be-dev-assignment/ktb-yuni-api:latest
+          EOF
