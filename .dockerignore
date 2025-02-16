@@ -1,0 +1,7 @@
+target
+build
+!build/libs/*.jar
+.gradle
+.git
+*.md
+*.env
