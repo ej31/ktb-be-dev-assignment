@@ -38,7 +38,7 @@
 
 ---
 
-### Custom Exception
+### Custom Exception, log rotation
 application.properties(기본지원)과 logback-spring.xml 중 application.properties 선택<br>
 이유 : 간단하게 설정 가능하며 다른 XML 설정이 불필요하였기 때문.<br>
 but 세부적인 로그 설정이 필요하면 logback-spring.xml을 사용할 예정
@@ -48,5 +48,47 @@ but 세부적인 로그 설정이 필요하면 logback-spring.xml을 사용할 �
 - **로그 보관 기간**: 30일간 로그 유지 (이후 자동 삭제)
 - **전체 로그 저장 용량**: 1GB를 초과하면 오래된 로그부터 삭제
 - **로그 파일 저장 경로**: `logs/app.log`
+
+---
+
+### 응답형식
+사용자가 원하는 응답 포맷을 선택할 수 있도록 쿼리파라미터를 활용하여 자동 변환 지원<br>
+
+- /api/v1/stocks?format=json → JSON 응답
+- /api/v1/stocks?format=xml → XML 응답
+- 별도 지정이 없으면 기본 JSON 응답
+
+#### 💣 트러블 슈팅 💣
+**[문제]**
+- 예외 발생 시 **JSON으로만 응답이 반환됨**
+- `/api/v1/stocks?format=xml` 요청 시에도 **XML 응답이 나오지 않음**
+- `GlobalExceptionHandler`에서 정의한 **커스텀 예외 처리(`ErrorResponseDTO`)가 무시됨**
+
+**[해결 방법]**
+- `application.properties`에서 **Spring Boot의 자동 예외 처리를 비활성화**
+    ```properties
+    spring.mvc.problemdetails.enabled=false
+    ```
+  
+---
+
+### 배포
+- docker, dockerhub를 사용하였고 AWS ec2에 pull받아서 배포
+- 환경변수는 .env파일로 주입<br>
+
+.env
+```
+DB_HOST=
+DB_PORT=
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+
+API_KEY=
+```
+도커 이미지 : ahnsojeong/stock-api:v3<br>
+실행 명령어 : docker run -d -p 80:8080 --name stock-api --env-file .env ahnsojeong/stock-api:v3
+
+요청 주소 : http://43.201.95.193
 
 ---
