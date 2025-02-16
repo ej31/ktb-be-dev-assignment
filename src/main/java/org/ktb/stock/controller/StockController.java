@@ -1,13 +1,18 @@
 package org.ktb.stock.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ktb.stock.dto.StockRequestDto;
 import org.ktb.stock.dto.StockResponseDto;
-import org.ktb.stock.dto.StockSearchDto;
-import org.ktb.stock.global.common.ApiResponse;
+import org.ktb.stock.dto.StockServiceDto;
+import org.ktb.stock.global.common.CommonResponse;
 import org.ktb.stock.global.error.code.ErrorCode;
 import org.ktb.stock.global.error.exception.BusinessException;
 import org.ktb.stock.service.StockService;
@@ -17,39 +22,64 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+@Tag(name = "주식 API", description = "주식 시세 정보를 조회해주는 API 입니다.")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/api/v1")
 public class StockController {
     private final StockService stockService;
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Value("${api.key}")
     private String apiKey;
 
-    /**
-     * 주식 정보 조회
-     * @param stockRequestDto 주식 조회 요청 DTO
-     * @param requestApiKey API 키
-     * @return 주식 정보 목록
-     */
-    @GetMapping("/api/v1/stocks")
-    public ResponseEntity<ApiResponse<List<StockResponseDto>>> getStocks(
-            @RequestBody StockRequestDto stockRequestDto,
+    @Operation(
+            summary = "주식 시세 정보 조회",
+            description = "회사 코드와 기간(조회 시작 기간, 조회 종료 기간)으로 주식 시세 정보를 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = CommonResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청 파라미터",
+                    content = @Content(schema = @Schema(implementation = CommonResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "API 키 검증 실패",
+                    content = @Content(schema = @Schema(implementation = CommonResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "데이터가 존재하지 않음",
+                    content = @Content(schema = @Schema(implementation = CommonResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류",
+                    content = @Content(schema = @Schema(implementation = CommonResponse.class))
+            )
+    })
+    @PostMapping("/stocks")
+    public ResponseEntity<CommonResponse<List<StockResponseDto>>> getStocks(
+            @Valid @RequestBody StockRequestDto stockRequestDto,
             @RequestHeader(name = "x-api-key") String requestApiKey) {
 
         validateApiKey(requestApiKey);
         validateRequestDto(stockRequestDto);
         if(!stockService.getCompany(stockRequestDto.getCompanyCode())) throw new BusinessException(ErrorCode.INVALID_COMPANY_CODE);
-        StockSearchDto stockSearchDto = convertToSearchDto(stockRequestDto);
+        StockServiceDto stockServiceDto = convertToServiceDto(stockRequestDto);
 
 
-        List<StockResponseDto> result = stockService.getStocks(stockSearchDto);
-        return ApiResponse.success(result);
+        List<StockResponseDto> result = stockService.getStocks(stockServiceDto);
+        return CommonResponse.success(result);
     }
 
     // API KEY 검증 로직
@@ -77,8 +107,8 @@ public class StockController {
 
         // 날짜 형식 및 범위 검증
         try {
-            LocalDate startDate = LocalDate.parse(stockRequestDto.getStartDate(), DATE_FORMATTER);
-            LocalDate endDate = LocalDate.parse(stockRequestDto.getEndDate(), DATE_FORMATTER);
+            LocalDate startDate = LocalDate.parse(stockRequestDto.getStartDate());
+            LocalDate endDate = LocalDate.parse(stockRequestDto.getEndDate());
 
             if (startDate.isAfter(endDate)) {
                 log.info("시작일자가 종료일자보다 늦습니다. startDate: {}, endDate: {}",
@@ -92,12 +122,12 @@ public class StockController {
         }
     }
 
-    // StockRequestDto -> StockSearchDto
-    private StockSearchDto convertToSearchDto(StockRequestDto requestDto) {
-        return new StockSearchDto(
+    // StockRequestDto -> StockServiceDto
+    private StockServiceDto convertToServiceDto(StockRequestDto requestDto) {
+        return new StockServiceDto(
                 requestDto.getCompanyCode(),
-                LocalDate.parse(requestDto.getStartDate(), DATE_FORMATTER),
-                LocalDate.parse(requestDto.getEndDate(), DATE_FORMATTER)
+                LocalDate.parse(requestDto.getStartDate()),
+                LocalDate.parse(requestDto.getEndDate())
         );
     }
 }
