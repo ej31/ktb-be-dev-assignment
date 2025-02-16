@@ -52,10 +52,8 @@ but 세부적인 로그 설정이 필요하면 logback-spring.xml을 사용할 �
 ---
 
 ### 응답형식
-사용자가 원하는 응답 포맷을 선택할 수 있도록 ContentNegotiationManager를 활용하여 자동 변환 지원<br>
+사용자가 원하는 응답 포맷을 선택할 수 있도록 쿼리파라미터를 활용하여 자동 변환 지원<br>
 
-- /api/v1/stocks.json → JSON 응답
-- /api/v1/stocks.xml → XML 응답
 - /api/v1/stocks?format=json → JSON 응답
 - /api/v1/stocks?format=xml → XML 응답
 - 별도 지정이 없으면 기본 JSON 응답
