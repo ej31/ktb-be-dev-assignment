@@ -3,12 +3,12 @@ package org.ktb.stock.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
 public class StockSearchDto {
     private String companyCode;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 }
