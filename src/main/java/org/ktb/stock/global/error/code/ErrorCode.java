@@ -17,6 +17,9 @@ public enum ErrorCode {
     INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST.value(), "날짜는 yyyy-MM-dd 형식이어야 합니다"),
     INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST.value(), "시작 날짜가 종료 날짜보다 늦습니다."),
 
+    // Content Negotiation 관련 에러
+    UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "지원하지 않는 미디어 타입입니다. (지원: application/json, application/xml)"),
+
     // 리소스를 찾을 수 없는 경우
     NOT_FOUND_API(HttpStatus.NOT_FOUND.value(), "호출한 API가 존재하지 않습니다."),
     NOT_FOUND_STOCK_DATA(HttpStatus.NOT_FOUND.value(), "해당 기간의 주식 데이터를 찾을 수 없습니다."),
