@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -47,6 +48,16 @@ public class GlobalExceptionHandler {
         logger.warn("존재하지 않는 회사 요청: {}", ex.getReason(), ex);
 
         ApiResponse<Object> response = ApiResponse.error(HttpStatus.NOT_FOUND, ex.getReason());
+        return getFormattedResponse(request, response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<String> handleNoResourceFoundException(
+            NoResourceFoundException ex, HttpServletRequest request) throws Exception {
+
+        logger.warn("리소스를 찾을 수 없음: {}", ex.getMessage(), ex);
+
+        ApiResponse<Object> response = ApiResponse.error(HttpStatus.NOT_FOUND, "요청한 리소스를 찾을 수 없습니다.");
         return getFormattedResponse(request, response, HttpStatus.NOT_FOUND);
     }
 
