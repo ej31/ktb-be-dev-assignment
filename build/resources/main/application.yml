@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://ec2-3-36-99-237.ap-northeast-2.compute.amazonaws.com:13306/assignment?serverTimezone=UTC&characterEncoding=UTF-8
+    username: sep
+    password: t6d5UJMD4whRQBKpoc1HYGaZx
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 5  #  최대 연결 수 제한
+      minimum-idle: 2        # 최소 유지 커넥션 수
+      idle-timeout: 30000    # 비활성 연결 유지 시간 설정 (30초)
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+api:
+  key: c18aa07f-f005-4c2f-b6db-dff8294e6b5e
