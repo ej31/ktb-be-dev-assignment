@@ -1,12 +1,10 @@
 package com.urung.ktbbedevassignment.api.v1.domain.service;
 
 import com.urung.ktbbedevassignment.api.v1.domain.dto.StockPriceDto;
-import com.urung.ktbbedevassignment.domain.company.entity.Company;
 import com.urung.ktbbedevassignment.domain.company.repository.CompanyRepository;
 import com.urung.ktbbedevassignment.domain.stocksHistory.entity.StocksHistory;
 import com.urung.ktbbedevassignment.domain.stocksHistory.repository.StocksHistoryRepository;
 import com.urung.ktbbedevassignment.global.exception.BadRequestException;
-import com.urung.ktbbedevassignment.global.exception.ErrorResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
