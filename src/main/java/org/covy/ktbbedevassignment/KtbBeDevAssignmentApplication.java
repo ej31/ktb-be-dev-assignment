@@ -9,5 +9,5 @@ public class KtbBeDevAssignmentApplication {
     public static void main(String[] args) {
         SpringApplication.run(KtbBeDevAssignmentApplication.class, args);
     }
-
 }
+
