@@ -38,6 +38,20 @@ dependencies {
 	testImplementation 'com.h2database:h2:2.3.232'
 }
 
+jar {
+	enabled = false // 기본 JAR 빌드를 비활성화하여 실행 가능 JAR를 생성
+}
+
+bootJar {
+	manifest {
+		attributes 'Main-Class': 'org.springframework.boot.loader.launch.JarLauncher'
+	}
+
+	archiveBaseName.set('app') // JAR 파일 이름을 'app'으로 설정
+	archiveVersion.set('')  // 버전 정보 제거
+	archiveClassifier.set('') // 추가적인 접미사 제거
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
