@@ -1,6 +1,7 @@
 package org.ktb.dev.assignment.core.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import org.springframework.validation.FieldError;
 import java.util.List;
 
 @Getter
+@JsonRootName("error")
 @Schema(description = "실패 Response")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResponse {

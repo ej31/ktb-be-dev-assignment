@@ -1,6 +1,7 @@
 package org.ktb.dev.assignment.presentation.v1.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.*;
 import org.ktb.dev.assignment.core.response.SuccessResponse;
 import org.ktb.dev.assignment.presentation.v1.dto.GetStockByCompanyCodeResponse;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +26,20 @@ public interface StockPriceApi {
 
     @Operation(summary = "기업의 주가 조회 API", description = "기간 내 특정 기업의 주가 정보를 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공적으로 기업 주가 조회가 완료되었습니다.")
+            @ApiResponse(responseCode = "200", description = "성공적으로 기업 주가 조회가 완료되었습니다.",
+                    content = {
+                    @Content(mediaType = MediaType.APPLICATION_JSON_VALUE),
+                    @Content(mediaType = MediaType.APPLICATION_XML_VALUE)
+            })
+
     })
-    @GetMapping("/api/v1/stocks/{companyCode}/prices")
+    @GetMapping(
+            value="/api/v1/stocks/{companyCode}/prices",
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE
+            }
+    )
     ResponseEntity<SuccessResponse<GetStockByCompanyCodeResponse>> getStockByCompany(
             @Parameter(description = "기업 코드 (최대 10자리)")
             @PathVariable("companyCode")

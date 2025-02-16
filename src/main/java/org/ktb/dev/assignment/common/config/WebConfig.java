@@ -1,5 +1,8 @@
 package org.ktb.dev.assignment.common.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -10,12 +13,18 @@ import org.ktb.dev.assignment.core.exception.CustomErrorCode;
 import org.ktb.dev.assignment.core.ratelimit.ApiKeyRateLimiter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
+import java.util.List;
 
 /*
  * !!할일 : 프로트엔드 포트에 맞게 CORS 설정 수정 필요 !
@@ -83,5 +92,34 @@ public class WebConfig implements WebMvcConfigurer {
                 return true;
             }
         }).addPathPatterns("/api/**").order(2);  // 2. Rate Limiting 인터셉터 (order: 2)
+    }
+
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        // Content Negotiation 설정
+        configurer
+                .defaultContentType(MediaType.APPLICATION_JSON) // 기본 응답 타입은 JSON
+                .favorParameter(false)     // URL 파라미터 비활성화
+                .ignoreAcceptHeader(false) // Accept 헤더 활성화
+                .mediaType("json", MediaType.APPLICATION_JSON)
+                .mediaType("xml", MediaType.APPLICATION_XML);
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        // JSON 컨버터 설정
+        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper jsonMapper = new ObjectMapper();
+        jsonMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        jsonConverter.setObjectMapper(jsonMapper);
+
+        // XML 컨버터 설정
+        MappingJackson2XmlHttpMessageConverter xmlConverter = new MappingJackson2XmlHttpMessageConverter();
+        XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        xmlConverter.setObjectMapper(xmlMapper);
+
+        converters.add(0, jsonConverter);
+        converters.add(1, xmlConverter);
     }
 }
