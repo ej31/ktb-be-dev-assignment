@@ -10,10 +10,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 import org.ktb.ktbbedevassignment.util.RateLimiter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import static org.ktb.ktbbedevassignment.constant.ApiConstant.API_KEY_HEADER;
 import static org.ktb.ktbbedevassignment.constant.ApiConstant.API_KEY_PARAM;
 
 public class RateLimiterFilter implements Filter {
+
+    private static final Logger logger = LoggerFactory.getLogger(RateLimiterFilter.class);
 
     private final RateLimiter rateLimiter;
 
@@ -32,6 +36,8 @@ public class RateLimiterFilter implements Filter {
                 .orElse(httpRequest.getParameter(API_KEY_PARAM));
 
         if (!rateLimiter.allowRequest(apiKey)) {
+            logger.warn("Rate Limiter 발동 apiKey: {}", apiKey);
+
             httpResponse.sendError(429,
                     "요청이 너무 많습니다. 10초 내 최대 10건의 요청만 허용됩니다. 잠시 후 다시 시도해주세요.");
             return;

@@ -13,11 +13,15 @@ import java.io.IOException;
 import org.ktb.ktbbedevassignment.dto.ApiResponse;
 import org.ktb.ktbbedevassignment.exception.InvalidApiKeyException;
 import org.ktb.ktbbedevassignment.exception.NotMatchedApiKeyException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class ExceptionHandlingFilter implements Filter {
+
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlingFilter.class);
 
     private final ObjectMapper objectMapper;
     private final XmlMapper xmlMapper;
@@ -36,6 +40,8 @@ public class ExceptionHandlingFilter implements Filter {
         try {
             chain.doFilter(request, response);
         } catch (InvalidApiKeyException | NotMatchedApiKeyException e) {
+            logger.warn("API Key 검증 실패: {}", e.getMessage(), e);
+
             sendErrorResponse(
                     (HttpServletRequest) request,
                     (HttpServletResponse) response,
@@ -43,6 +49,8 @@ public class ExceptionHandlingFilter implements Filter {
                     e.getReason()
             );
         } catch (Exception e) {
+            logger.error("필터에서 처리되지 않은 예외 발생: {}", e.getMessage(), e);
+
             sendErrorResponse(
                     (HttpServletRequest) request,
                     (HttpServletResponse) response,
