@@ -1,8 +1,6 @@
 package org.ktb.stock.config;
 
-import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
-import io.github.bucket4j.Refill;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
@@ -15,14 +13,16 @@ public class BucketConfig {
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
 
     // 버킷 생성 설정
-    private Bucket newBucket() {
+    public Bucket createBucket() {
         return Bucket.builder()
-                .addLimit(Bandwidth.classic(10, Refill.intervally(10, Duration.ofSeconds(10))))
+                .addLimit(limit -> limit
+                        .capacity(10)
+                        .refillIntervally(10, Duration.ofSeconds(10)))
                 .build();
     }
 
     // API 키에 대한 버킷 가져오기
     public Bucket resolveBucket(String apiKey) {
-        return buckets.computeIfAbsent(apiKey, k -> newBucket());
+        return buckets.computeIfAbsent(apiKey, k -> createBucket());
     }
 }
