@@ -26,8 +26,8 @@ public class GlobalExceptionHandler {
     }
 
     //  404 NOT FOUND - 데이터가 존재하지 않을 경우
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleNotFound(IllegalArgumentException ex) {
+    @ExceptionHandler({IllegalArgumentException.class, NotFoundException.class})
+    public ResponseEntity<Object> handleNotFound(Exception ex) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
