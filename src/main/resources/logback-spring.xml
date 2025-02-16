@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!--
+    로그 정책 정리!
+    EC2 프리티어 EBS 크기는 최대 20GiB 가능함을 기준으로 작성
+    => Spring Boot 내부 톰캣을 사용해서 Docker로 배포 기준 약 10GB를 사용한다고 가정
+    => 가용 로그 공간: ~7GB (전체의 35%) 설정
+
+    기본 로그 : 50MB 단일 파일, 5GB 최대 크기, 30일 보관
+    에러 로그 : 20MB 단일 파일, 2GB 최대 크기, 60일 보관
+    -->
+
+    <!-- 콘솔 로그 설정 -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 콘솔에 출력될 로그의 형식 지정 -->
+        <encoder>
+            <!--
+            로그 패턴
+            %d{HH:mm:ss.SSS}: 시간 (시:분:초.밀리초)
+            [%thread]: 현재 스레드 이름
+            %-5level: 로그 레벨 (5자리 맞춤)
+            %logger{36}: 로거 이름 (최대 36자)
+            %msg: 실제 로그 메시지
+            %n: 줄바꿈
+            -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 일반 애플리케이션 로그 설정 -->
+    <appender name="Application" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 로그 파일 경로 지정 -->
+        <!-- 도커 배포 예정이므로 /logs 폴더에 로그 생성 -->
+        <file>/logs/application.log</file>
+
+        <!-- 로그 메시지 형식 지정 -->
+        <encoder>
+            <!-- 파일에 저장될 때는 날짜 정보를 포함하여 더 상세하게 기록 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <!-- 로그 파일 롤링 정책 설정 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--
+            로그 파일명 패턴
+            %d{yyyy-MM-dd}: 날짜
+            %i: 인덱스 (같은 날짜에 여러 파일이 생성될 경우 사용)
+            .gz: GZIP 압축 적용
+            -->
+            <fileNamePattern>/home/ubuntu/logs/application.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 단일 파일의 최대 크기 -->
+            <maxFileSize>50MB</maxFileSize>
+            <!-- 로그 파일 보관 기간 -->
+            <maxHistory>30</maxHistory>
+            <!-- 전체 로그 파일의 최대 크기 -->
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 에러 로그 설정 -->
+    <appender name="Error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 에러 로그 파일 경로 -->
+        <file>/home/ubuntu/logs/error.log</file>
+
+        <!-- 로그 메시지 형식 -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <!-- ERROR 레벨 이상의 로그만 필터링 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+
+        <!-- 에러 로그 롤링 정책 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/home/ubuntu/logs/error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 에러 로그는 일반 로그보다 작은 크기로 설정 -->
+            <maxFileSize>20MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 루트 로거 설정 -->
+    <root level="INFO">
+        <!--
+        모든 로그는 세 가지 방향으로 전송:
+        1. Console: 콘솔 출력용
+        2. Application: 일반 로그 파일용
+        3. Error: 에러 로그 파일용 (ERROR 레벨만)
+        -->
+        <appender-ref ref="Console" />
+        <appender-ref ref="Application" />
+        <appender-ref ref="Error" />
+    </root>
+
+    <!-- 특정 패키지의 로그 레벨 설정 -->
+    <!--
+    Spring Framework 로그는 WARN 레벨로 설정하여 불필요한 로그 감소
+    - INFO 레벨: 일반적인 정보성 메시지
+    - WARN 레벨: 잠재적 문제 상황
+    - ERROR 레벨: 실제 문제 상황
+    - DEBUG 레벨: 개발 시 상세 정보
+    -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+</configuration>
