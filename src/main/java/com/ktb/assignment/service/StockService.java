@@ -1,7 +1,6 @@
 package com.ktb.assignment.service;
 
 import com.ktb.assignment.domain.StocksHistory;
-import com.ktb.assignment.dto.stock.request.StockInfoRequestDto;
 import com.ktb.assignment.dto.stock.response.StockInfoResponseDto;
 import com.ktb.assignment.repository.StocksHistoryRepository;
 
@@ -20,17 +19,13 @@ public class StockService {
 
     private final StocksHistoryRepository stocksHistoryRepository;
 
-    public List<StockInfoResponseDto> getStockHistory(StockInfoRequestDto dto){
-
-        String companyCode = dto.companyCode();
-        LocalDate startDate = dto.startDate();
-        LocalDate endDate = dto.endDate();
+    public List<StockInfoResponseDto> getStockHistory(String companyCode, LocalDate startDate, LocalDate endDate){
 
         List<StocksHistory> stocksHistories = stocksHistoryRepository.findByCompany_CompanyCodeAndTradeDateBetween(companyCode, startDate, endDate);
 
         return stocksHistories.stream()
                 .map(stocksHistory -> new StockInfoResponseDto(
-                        stocksHistory.getCompany().getCompanyName(), // Service에서 데이터 변환
+                        stocksHistory.getCompany().getCompanyName(),
                         stocksHistory.getTradeDate().toString(),
                         stocksHistory.getClosePrice()
                 ))

@@ -8,8 +8,10 @@ import lombok.Builder;
 public record StockInfoResponseDto(
         @NotNull
         String companyName,
+
         @NotNull
         String tradeDate,
+
         @NotNull
         float closingPrice
 ) {
