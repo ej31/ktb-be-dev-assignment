@@ -15,7 +15,7 @@ public class StockHistory {
     private StockHistoryId id;
 
     @ManyToOne
-    @JoinColumn(name = "company_code", referencedColumnName = "companyCode", insertable = false, updatable = false)
+    @JoinColumn(name = "company_code", referencedColumnName = "company_code", insertable = false, updatable = false)
     private Company company;
 
     @Column(nullable = false)
@@ -32,4 +32,6 @@ public class StockHistory {
 
     @Column(nullable = false)
     private float volume;
+
+
 }

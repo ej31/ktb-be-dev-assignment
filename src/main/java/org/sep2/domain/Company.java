@@ -16,10 +16,11 @@ import lombok.Setter;
 public class Company {
 
     @Id
-    @Column(nullable = false)
+    @Column(name = "company_code", nullable = false, length = 10)
     private String companyCode;
 
-    @Column(nullable = false)
+
+    @Column(name = "company_name", nullable = false)
     private String companyName;
 
 
