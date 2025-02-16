@@ -18,7 +18,7 @@ public class StockRepository {
     private final RowMapper<StockResponseDto> stockResponseDtoRowMapper = (rs, rowNum) ->
             new StockResponseDto(
                     rs.getString("company_name"),
-                    rs.getDate("trade_date"),
+                    rs.getDate("trade_date").toLocalDate(),
                     rs.getFloat("close_price")
             );
 
@@ -36,5 +36,14 @@ public class StockRepository {
                 stockSearchDto.getStartDate(),
                 stockSearchDto.getEndDate()
         );
+    }
+
+    // 입력 받은 회사코드가 있는 회사인지 확인
+    public boolean findCompany(String companyCode) {
+        String sql = "SELECT company_name FROM company WHERE company_code = ?";
+
+        jdbcTemplate.queryForObject(sql, String.class, companyCode);
+
+        return true;
     }
 }
