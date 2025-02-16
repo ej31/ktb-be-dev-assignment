@@ -1,5 +1,6 @@
 package com.ktb.yuni.controller;
 
+import com.ktb.yuni.config.Constants;
 import com.ktb.yuni.dto.ApiResponse;
 import com.ktb.yuni.dto.StockResponseDto;
 import com.ktb.yuni.service.StockService;
@@ -14,11 +15,12 @@ import java.time.LocalDate;
 @RequestMapping("/api/v1/stocks")
 public class StockController {
     private final StockService stockService;
+    private final Constants constants;
 
-    private static final String VALID_API_KEY = "c18aa07f-f005-4c2f-b6db-dff8294e6b5e";
 
-    public StockController(StockService stockService) {
+    public StockController(StockService stockService, Constants constants) {
         this.stockService = stockService;
+        this.constants = constants;
     }
 
     @GetMapping
@@ -44,7 +46,7 @@ public class StockController {
             throw new IllegalArgumentException("API key가 누락되었습니다.");
         }
 
-        if (!VALID_API_KEY.equals(apiKey)) {
+        if (!constants.getApiKey().equals(apiKey)) {
             throw new IllegalArgumentException("올바르지 않은 API key 입니다.");
         }
     }
