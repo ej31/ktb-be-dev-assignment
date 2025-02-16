@@ -12,8 +12,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@IdClass(StockHistory.StockHistoryId.class)
-public class StockHistory {
+@IdClass(StocksHistory.StockHistoryId.class)
+public class StocksHistory {
 
     @Id
     private String companyCode;
@@ -22,19 +22,8 @@ public class StockHistory {
     private LocalDate tradeDate;
 
     @Column(nullable = false)
-    private Float openPrice;
-
-    @Column(nullable = false)
-    private Float highPrice;
-
-    @Column(nullable = false)
-    private Float lowPrice;
-
-    @Column(nullable = false)
     private Float closePrice;
 
-    @Column(nullable = false)
-    private Float volume;
 
     @NoArgsConstructor
     @Getter
