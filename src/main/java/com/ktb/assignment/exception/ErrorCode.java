@@ -12,6 +12,7 @@ public enum ErrorCode {
     MISSING_REQUEST_PARAMETER("40001", HttpStatus.BAD_REQUEST, "필수 파라미터가 누락되었습니다."),
     MISSING_REQUEST_BODY("40002", HttpStatus.BAD_REQUEST, "요청 바디가 누락되었습니다."),
     MISSING_API_KEY_PARAMETER("40003", HttpStatus.BAD_REQUEST, "API Key가 누락되었습니다."),
+    INVALID_DATE_FORMAT("40004", HttpStatus.BAD_REQUEST, "날짜 형식이 올바르지 않습니다. (yyyy-MM-dd) 형식을 사용하세요."),
 
     // 403 error
     ACCESS_DENIED_ERROR("40300", HttpStatus.FORBIDDEN, "API Key가 일치하지 않습니다."),

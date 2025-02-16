@@ -7,8 +7,11 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import java.time.LocalDate;
 
 @Slf4j
 @RestControllerAdvice
@@ -45,6 +48,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(exception.getErrorCode().getHttpStatus())
                 .body(ResponseDto.fail(exception));
+    }
+
+    // API 요청 LocalDate 인자 타입이 틀린 경우 (400)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ResponseDto<?>> handleArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.error("handleArgumentTypeMismatchException: {}", e.getMessage());
+
+        if (e.getRequiredType() != null && e.getRequiredType().equals(LocalDate.class)) {
+            return ResponseEntity
+                    .status(ErrorCode.INVALID_DATE_FORMAT.getHttpStatus())
+                    .body(ResponseDto.fail(new CommonException(ErrorCode.INVALID_DATE_FORMAT)));
+        }
+
+        return ResponseEntity
+                .status(ErrorCode.INVALID_PARAMETER.getHttpStatus())
+                .body(ResponseDto.fail(new CommonException(ErrorCode.INVALID_PARAMETER)));
     }
 
     // 개발자가 직접 정의한 커스텀 예외
