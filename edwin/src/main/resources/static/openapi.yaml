@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  title: 주식 정보 제공 API
+  description: 회사별 주식 종료가 데이터를 조회하는 API
+  contact:
+    email: qkr990509@naver.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: https://virtserver.swaggerhub.com/edwin-a2d/assignment/1.0.0
+    description: SwaggerHub API Auto Mocking
+  - url: https://virtserver.swaggerhub.com/spring-1d3/stockapi/1.0.0
+    description: SwaggerHub API Auto Mocking
+  - url: http://localhost:8080
+    description: Local Server
+tags:
+  - name: developers
+    description: 주식 데이터를 조회하는 API
+paths:
+  /api/v1/stock-historys:
+    get:
+      tags:
+        - developers
+      summary: 특정 기업의 주식 종가 조회
+      description: |
+        특정 기업의 주식 종가 데이터를 기간별로 조회할 수 있습니다.
+      operationId: getStockHistory
+      parameters:
+        - name: company_code
+          in: query
+          description: 기업의 종목 코드
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: ACM
+        - name: start_date
+          in: query
+          description: |
+            조회 시작 날짜 (형식: YYYY-MM-DD)
+            - 필수 값입니다.
+            - 올바른 형식이 아닐 경우 `INVALID_DATE_FORMAT` 오류가 발생합니다.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date
+            example: 2025-01-01
+        - name: end_date
+          in: query
+          description: |
+            조회 종료 날짜 (형식: YYYY-MM-DD)
+            - 필수 값입니다.
+            - 올바른 형식이 아닐 경우 `INVALID_DATE_FORMAT` 오류가 발생합니다.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date
+            example: 2025-02-01
+        - name: x-api-key
+          in: header
+          description: API 키 (필수)
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: c18aa07f-f005-4c2f-b6db-dff8294e6b5e
+      responses:
+        "200":
+          description: 요청한 종목의 주식 종가 데이터 조회 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StockHistory"
+        "400":
+          description: 요청 파라미터 누락 또는 유효하지 않은 값
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                missingCompanyCode:
+                  summary: company_code 누락
+                  value:
+                    errorCode: 400
+                    message: MISSING_COMPANY_CODE
+                missingStartDate:
+                  summary: start_date 누락
+                  value:
+                    errorCode: 400
+                    message: MISSING_START_DATE
+                missingEndDate:
+                  summary: end_date 누락
+                  value:
+                    errorCode: 400
+                    message: MISSING_END_DATE
+                invalidStartDateFormat:
+                  summary: 잘못된 `start_date` 형식
+                  value:
+                    errorCode: 400
+                    message: INVALID_START_DATE_FORMAT
+                invalidEndDateFormat:
+                  summary: 잘못된 `end_date` 형식
+                  value:
+                    errorCode: 400
+                    message: INVALID_END_DATE_FORMAT
+        "403":
+          description: API Key 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                missingApiKey:
+                  summary: API Key 없음
+                  value:
+                    errorCode: 403
+                    message: MISSING_API_KEY
+                invalidApiKey:
+                  summary: API Key 인증 실패
+                  value:
+                    errorCode: 403
+                    message: INVALID_API_KEY
+        "404":
+          description: 기업 코드가 존재하지 않음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                companyNotFound:
+                  summary: 기업 코드 없음
+                  value:
+                    errorCode: 404
+                    message: COMPANY_NOT_FOUND
+        "500":
+          description: 서버 내부 오류
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                internalServerError:
+                  summary: 서버 오류
+                  value:
+                    errorCode: 500
+                    message: INTERNAL_SERVER_ERROR
+components:
+  schemas:
+    StockHistory:
+      required:
+        - closingPrice
+        - companyName
+        - tradeDate
+      type: object
+      properties:
+        companyName:
+          type: string
+          description: 기업명
+          example: 삼성전자
+        tradeDate:
+          type: string
+          description: 주식 거래 날짜
+          format: date
+          example: 2025-01-02
+        closingPrice:
+          type: number
+          description: 종가 (Close Price)
+          format: float
+          example: 71500
+    ErrorResponse:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          description: 오류 코드 (400으로 고정)
+          example: 400
+        message:
+          type: string
+          description: 오류 메시지 코드 (프론트엔드에서 매칭하여 처리)
+          example: MISSING_PARAMETER
