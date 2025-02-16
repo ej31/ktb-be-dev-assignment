@@ -17,6 +17,7 @@ import org.ktb.stock.global.error.code.ErrorCode;
 import org.ktb.stock.global.error.exception.BusinessException;
 import org.ktb.stock.service.StockService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -44,42 +45,59 @@ public class StockController {
             @ApiResponse(
                     responseCode = "200",
                     description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = CommonResponse.class))
+                    content = {
+                            @Content(mediaType = "application/json",schema = @Schema(implementation = CommonResponse.class)),
+                            @Content(mediaType = "application/xml", schema = @Schema(implementation = CommonResponse.class))
+                    }
             ),
             @ApiResponse(
                     responseCode = "400",
                     description = "잘못된 요청 파라미터",
-                    content = @Content(schema = @Schema(implementation = CommonResponse.class))
+                    content = {
+                            @Content(mediaType = "application/json",schema = @Schema(implementation = CommonResponse.class)),
+                            @Content(mediaType = "application/xml", schema = @Schema(implementation = CommonResponse.class))
+                    }
             ),
             @ApiResponse(
                     responseCode = "403",
                     description = "API 키 검증 실패",
-                    content = @Content(schema = @Schema(implementation = CommonResponse.class))
+                    content = {
+                            @Content(mediaType = "application/json",schema = @Schema(implementation = CommonResponse.class)),
+                            @Content(mediaType = "application/xml", schema = @Schema(implementation = CommonResponse.class))
+                    }
             ),
             @ApiResponse(
                     responseCode = "404",
                     description = "데이터가 존재하지 않음",
-                    content = @Content(schema = @Schema(implementation = CommonResponse.class))
+                    content = {
+                            @Content(mediaType = "application/json",schema = @Schema(implementation = CommonResponse.class)),
+                            @Content(mediaType = "application/xml", schema = @Schema(implementation = CommonResponse.class))
+                    }
             ),
             @ApiResponse(
                     responseCode = "500",
                     description = "서버 오류",
-                    content = @Content(schema = @Schema(implementation = CommonResponse.class))
+                    content = {
+                            @Content(mediaType = "application/json",schema = @Schema(implementation = CommonResponse.class)),
+                            @Content(mediaType = "application/xml", schema = @Schema(implementation = CommonResponse.class))
+                    }
             )
     })
     @PostMapping("/stocks")
     public ResponseEntity<CommonResponse<List<StockResponseDto>>> getStocks(
             @Valid @RequestBody StockRequestDto stockRequestDto,
-            @RequestHeader(name = "x-api-key") String requestApiKey) {
+            @RequestHeader(name = "x-api-key") String requestApiKey,
+            @RequestHeader(name = "Accept", required = false) String acceptHeader) {
 
         validateApiKey(requestApiKey);
         validateRequestDto(stockRequestDto);
         if(!stockService.getCompany(stockRequestDto.getCompanyCode())) throw new BusinessException(ErrorCode.INVALID_COMPANY_CODE);
+
+        MediaType mediaType = getValidMediaType(acceptHeader);
+
         StockServiceDto stockServiceDto = convertToServiceDto(stockRequestDto);
-
-
         List<StockResponseDto> result = stockService.getStocks(stockServiceDto);
-        return CommonResponse.success(result);
+        return CommonResponse.success(result, mediaType);
     }
 
     // API KEY 검증 로직
@@ -121,6 +139,26 @@ public class StockController {
             throw new BusinessException(ErrorCode.INVALID_DATE_FORMAT);
         }
     }
+
+    // 미디어 타입 검증 로직
+    private MediaType getValidMediaType(String acceptHeader) {
+        // null 또는 */* 처리
+        if (acceptHeader == null || acceptHeader.contains("*/*")) {
+            return MediaType.APPLICATION_JSON;  // 기본값을 JSON으로 설정
+        }
+
+        // JSON 또는 XML만 지원
+        if (acceptHeader.contains(MediaType.APPLICATION_JSON_VALUE)) {
+            return MediaType.APPLICATION_JSON;
+        }
+        if (acceptHeader.contains(MediaType.APPLICATION_XML_VALUE)) {
+            return MediaType.APPLICATION_XML;
+        }
+
+        // JSON, XML 외의 값이 들어오면 예외 처리
+        throw new BusinessException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
+    }
+
 
     // StockRequestDto -> StockServiceDto
     private StockServiceDto convertToServiceDto(StockRequestDto requestDto) {
