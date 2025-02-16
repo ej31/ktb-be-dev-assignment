@@ -38,7 +38,7 @@
 
 ---
 
-### Custom Exception
+### Custom Exception, log rotation
 application.properties(기본지원)과 logback-spring.xml 중 application.properties 선택<br>
 이유 : 간단하게 설정 가능하며 다른 XML 설정이 불필요하였기 때문.<br>
 but 세부적인 로그 설정이 필요하면 logback-spring.xml을 사용할 예정
@@ -50,3 +50,12 @@ but 세부적인 로그 설정이 필요하면 logback-spring.xml을 사용할 �
 - **로그 파일 저장 경로**: `logs/app.log`
 
 ---
+
+### 응답형식
+사용자가 원하는 응답 포맷을 선택할 수 있도록 ContentNegotiationManager를 활용하여 자동 변환 지원<br>
+
+- /api/v1/stocks.json → JSON 응답
+- /api/v1/stocks.xml → XML 응답
+- /api/v1/stocks?format=json → JSON 응답
+- /api/v1/stocks?format=xml → XML 응답
+- 별도 지정이 없으면 기본 JSON 응답
