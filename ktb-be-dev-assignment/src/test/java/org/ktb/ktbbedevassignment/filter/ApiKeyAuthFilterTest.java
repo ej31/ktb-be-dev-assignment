@@ -28,10 +28,14 @@ class ApiKeyAuthFilterTest {
 
     private ApiKeyAuthFilter filter;
 
-    @Mock private ApiKeyValidator apiKeyValidator;
-    @Mock private HttpServletRequest request;
-    @Mock private HttpServletResponse response;
-    @Mock private FilterChain chain;
+    @Mock
+    private ApiKeyValidator apiKeyValidator;
+    @Mock
+    private HttpServletRequest request;
+    @Mock
+    private HttpServletResponse response;
+    @Mock
+    private FilterChain chain;
 
     @BeforeEach
     void setUp() {

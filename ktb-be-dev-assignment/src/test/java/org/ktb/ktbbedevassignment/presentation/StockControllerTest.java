@@ -40,18 +40,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class StockControllerTest {
 
     private static final String REQUEST_URL = "/api/v1/stocks";
-
+    private final int stockInfoListSize = 2;
+    private final List<StockInfoDto> stockInfoList = createTestStockInfoDtoList(stockInfoListSize);
     @Autowired
     private MockMvc mockMvc;
-
     @MockitoBean
     private StockService stockService;
-
     @MockitoBean
     private ApiKeyValidator apiKeyValidator;
-
-    private int stockInfoListSize = 2;
-    private List<StockInfoDto> stockInfoList = createTestStockInfoDtoList(stockInfoListSize);
 
     @BeforeEach
     void setUp() {

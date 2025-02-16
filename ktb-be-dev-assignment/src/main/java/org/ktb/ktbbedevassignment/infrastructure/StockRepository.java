@@ -1,11 +1,10 @@
 package org.ktb.ktbbedevassignment.infrastructure;
 
+import java.util.List;
 import org.ktb.ktbbedevassignment.dto.StockInfoDto;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class StockRepository {

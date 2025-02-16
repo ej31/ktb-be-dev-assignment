@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ApiKeyValidatorTest {
 
-    private String validApiKey = "testValidApiKey";
+    private final String validApiKey = "testValidApiKey";
 
     @Nested
     @DisplayName("validateApiKey 테스트")
@@ -23,7 +23,7 @@ class ApiKeyValidatorTest {
             @DisplayName("API 키가 유효한 경우 반환값 없이 성공한다.")
             void validateApiKey_WhenApiKeyIsValid_ReturnsNothing() {
                 // given
-                String apiKey = new String(validApiKey);
+                String apiKey = validApiKey;
                 ApiKeyValidator apiKeyValidator = new ApiKeyValidator(validApiKey);
 
                 // when

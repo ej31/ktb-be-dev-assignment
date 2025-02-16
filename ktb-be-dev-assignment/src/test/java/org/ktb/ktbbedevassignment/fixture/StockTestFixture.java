@@ -20,6 +20,17 @@ public class StockTestFixture {
     public static final float TEST_CLOSING_PRICE = 152.5f;
 
     public static final float TEST_VOLUME = 1000000;
+    private static final List<String> INVALID_DATES = List.of(
+            "25-02-20",
+            "2021-02-25T00:00:00",
+            "2021-02-25T00:00:00Z",
+            "2021-02-25 00:00:00",
+            "2021-02-25 00:00:00.000",
+            "2021-02-25 00:00:00.000Z",
+            "2021-02-25 00:00:00.000+09:00",
+            "2021-02-25 00:00:00.000+0900",
+            "2021-02-25 00:00:00.000+09"
+    );
 
     public static String plusDay(String date, int day) {
         return LocalDate.parse(date).plusDays(day).toString();
@@ -36,18 +47,6 @@ public class StockTestFixture {
         }
         return stockInfoDtoList;
     }
-
-    private static final List<String> INVALID_DATES = List.of(
-            "25-02-20",
-            "2021-02-25T00:00:00",
-            "2021-02-25T00:00:00Z",
-            "2021-02-25 00:00:00",
-            "2021-02-25 00:00:00.000",
-            "2021-02-25 00:00:00.000Z",
-            "2021-02-25 00:00:00.000+09:00",
-            "2021-02-25 00:00:00.000+0900",
-            "2021-02-25 00:00:00.000+09"
-    );
 
     public static Stream<String> provideInvalidDates() {
         return INVALID_DATES.stream();

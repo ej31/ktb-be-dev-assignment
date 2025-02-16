@@ -35,6 +35,27 @@ class JsonXmlResponseAspectTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private void performRequest(String format, MediaType expectedMediaType) throws Exception {
+        if (format.equalsIgnoreCase("json")) {
+            mockMvc.perform(get(REQUEST_URL)
+                            .param("format", format))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(expectedMediaType))
+                    .andExpect(jsonPath("$.status").value(200))
+                    .andExpect(jsonPath("$.message").value("Success"));
+            return;
+        }
+
+        if (format.equalsIgnoreCase("xml")) {
+            mockMvc.perform(get(REQUEST_URL)
+                            .param("format", format))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(expectedMediaType))
+                    .andExpect(xpath("/ApiResponse/status").string("200"))
+                    .andExpect(xpath("/ApiResponse/message").string("Success"));
+        }
+    }
+
     @Nested
     @DisplayName("JSON 응답 테스트")
     class JsonResponseTest {
@@ -84,27 +105,6 @@ class JsonXmlResponseAspectTest {
         @DisplayName("Format이 xMl(대, 소문자 혼합)인 경우 XML 응답이 정상적으로 반환된다")
         void whenFormatIsMixedCaseXml_thenReturnsXmlResponse() throws Exception {
             performRequest("xMl", MediaType.APPLICATION_XML);
-        }
-    }
-
-    private void performRequest(String format, MediaType expectedMediaType) throws Exception {
-        if (format.equalsIgnoreCase("json")) {
-            mockMvc.perform(get(REQUEST_URL)
-                        .param("format", format))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(expectedMediaType))
-                .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.message").value("Success"));
-            return;
-        }
-
-        if (format.equalsIgnoreCase("xml")) {
-            mockMvc.perform(get(REQUEST_URL)
-                        .param("format", format))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(expectedMediaType))
-                .andExpect(xpath("/ApiResponse/status").string("200"))
-                .andExpect(xpath("/ApiResponse/message").string("Success"));
         }
     }
 }

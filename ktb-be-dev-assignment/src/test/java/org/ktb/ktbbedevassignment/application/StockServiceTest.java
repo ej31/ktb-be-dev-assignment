@@ -5,9 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.ktb.ktbbedevassignment.dto.StockInfoDto;
 import org.ktb.ktbbedevassignment.exception.CompanyNotFoundException;
 import org.ktb.ktbbedevassignment.infrastructure.CompanyRepository;
-import org.ktb.ktbbedevassignment.dto.StockInfoDto;
 import org.ktb.ktbbedevassignment.infrastructure.StockRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,12 +22,11 @@ import static org.mockito.Mockito.when;
 
 class StockServiceTest {
 
+    private final int stockInfoDtoListSize = 2;
+    private final List<StockInfoDto> stockInfoDtoList = createTestStockInfoDtoList(stockInfoDtoListSize);
     private StockService stockService;
     private StockRepository stockRepository;
     private CompanyRepository companyRepository;
-
-    private final int stockInfoDtoListSize = 2;
-    private final List<StockInfoDto> stockInfoDtoList = createTestStockInfoDtoList(stockInfoDtoListSize);
 
     @BeforeEach
     void setUp() {

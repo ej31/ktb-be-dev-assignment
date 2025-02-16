@@ -36,9 +36,12 @@ class ExceptionHandlingFilterTest {
     private ObjectMapper objectMapper;
     private XmlMapper xmlMapper;
 
-    @Mock private HttpServletRequest request;
-    @Mock private HttpServletResponse response;
-    @Mock private FilterChain chain;
+    @Mock
+    private HttpServletRequest request;
+    @Mock
+    private HttpServletResponse response;
+    @Mock
+    private FilterChain chain;
     private StringWriter responseWriter;
 
     @BeforeAll
@@ -62,6 +65,14 @@ class ExceptionHandlingFilterTest {
     void givenValidRequest_whenFiltering_thenProceedWithoutError() throws IOException, ServletException {
         filter.doFilter(request, response, chain);
         verify(chain, times(1)).doFilter(request, response);
+    }
+
+    private void verifyErrorResponse(HttpStatus expectedStatus, String expectedMessage) throws IOException {
+        verify(response).setStatus(expectedStatus.value());
+        verify(response).setContentType(MediaType.APPLICATION_JSON_VALUE);
+        ApiResponse<?> apiResponse = objectMapper.readValue(responseWriter.toString(), ApiResponse.class);
+        assertThat(apiResponse.status()).isEqualTo(expectedStatus.value());
+        assertThat(apiResponse.message()).isEqualTo(expectedMessage);
     }
 
     @Nested
@@ -132,13 +143,5 @@ class ExceptionHandlingFilterTest {
 
             verifyErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
         }
-    }
-
-    private void verifyErrorResponse(HttpStatus expectedStatus, String expectedMessage) throws IOException {
-        verify(response).setStatus(expectedStatus.value());
-        verify(response).setContentType(MediaType.APPLICATION_JSON_VALUE);
-        ApiResponse<?> apiResponse = objectMapper.readValue(responseWriter.toString(), ApiResponse.class);
-        assertThat(apiResponse.status()).isEqualTo(expectedStatus.value());
-        assertThat(apiResponse.message()).isEqualTo(expectedMessage);
     }
 }

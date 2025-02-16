@@ -15,7 +15,7 @@ import static org.ktb.ktbbedevassignment.constant.ApiConstant.API_KEY_PARAM;
 
 public class ApiKeyAuthFilter implements Filter {
 
-    private ApiKeyValidator apiKeyValidator;
+    private final ApiKeyValidator apiKeyValidator;
 
     public ApiKeyAuthFilter(ApiKeyValidator apiKeyValidator) {
         this.apiKeyValidator = apiKeyValidator;
