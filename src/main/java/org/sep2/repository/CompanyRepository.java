@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, String> {
-    // company_code로 회사 찾기
-    Company findCompanyCode(String companyCode);
+    // 기업 코드를 기반으로 기업 정보를 조회하는 메서드
+    Company findByCompanyCode(String companyCode);
 }
