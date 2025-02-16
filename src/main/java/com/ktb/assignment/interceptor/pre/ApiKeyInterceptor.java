@@ -1,5 +1,7 @@
 package com.ktb.assignment.interceptor.pre;
 
+import com.ktb.assignment.exception.CommonException;
+import com.ktb.assignment.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,16 +23,11 @@ public class ApiKeyInterceptor implements HandlerInterceptor {
         }
 
         // API Key가 없는 경우
-        if (apiKey == null || apiKey.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "API key가 없습니다.");
-            return false;
-        }
+        if (apiKey == null || apiKey.isEmpty()) throw new CommonException(ErrorCode.MISSING_API_KEY_PARAMETER);
 
         // API Key 검증
-        if (!API_KEY.equals(apiKey)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "API key가 올바르지 않습니다.");
-            return false;
-        }
+        if (!API_KEY.equals(apiKey)) throw new CommonException(ErrorCode.ACCESS_DENIED_ERROR);
+
 
         return true;
     }
