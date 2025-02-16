@@ -31,6 +31,7 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.33'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.4'
+    implementation 'org.springframework:spring-context'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'   // Spring Boot 기본 테스트
