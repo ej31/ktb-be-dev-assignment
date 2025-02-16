@@ -1,0 +1,5 @@
+target/
+*.war
+*.log
+node_modules/
+.env
