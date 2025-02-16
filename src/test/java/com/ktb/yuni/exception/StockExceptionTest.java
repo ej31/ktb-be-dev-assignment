@@ -25,7 +25,7 @@ public class StockExceptionTest {
 
 
     @Test
-    @DisplayName("필수 파라지머 누락 시 400 Bad Request 테스트")
+    @DisplayName("필수 파라미터 누락 시 400 Bad Request 테스트")
     void testMissingParameter() {
         // given - startDate 파라미터 누락
         String url = BASE_URL + "?companyCode=AAPL&endDate=2020-01-01&apiKey=c18aa07f-f005-4c2f-b6db-dff8294e6b5e";
