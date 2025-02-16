@@ -13,6 +13,7 @@ import java.io.IOException;
 import org.ktb.ktbbedevassignment.dto.ApiResponse;
 import org.ktb.ktbbedevassignment.exception.InvalidApiKeyException;
 import org.ktb.ktbbedevassignment.exception.NotMatchedApiKeyException;
+import org.ktb.ktbbedevassignment.exception.RateLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,6 +42,15 @@ public class ExceptionHandlingFilter implements Filter {
             chain.doFilter(request, response);
         } catch (InvalidApiKeyException | NotMatchedApiKeyException e) {
             logger.warn("API Key 검증 실패: {}", e.getMessage(), e);
+
+            sendErrorResponse(
+                    (HttpServletRequest) request,
+                    (HttpServletResponse) response,
+                    HttpStatus.valueOf(e.getStatusCode().value()),
+                    e.getReason()
+            );
+        } catch (RateLimitExceededException e) {
+            logger.warn("Rate Limiter 발동: {}", e.getMessage(), e);
 
             sendErrorResponse(
                     (HttpServletRequest) request,

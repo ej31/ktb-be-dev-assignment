@@ -5,15 +5,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.ktb.ktbbedevassignment.exception.RateLimitExceededException;
 import org.ktb.ktbbedevassignment.util.RateLimiter;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.ktb.ktbbedevassignment.fixture.ApiKeyTestFixture.TEST_API_KEY;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -36,15 +36,10 @@ class RateLimiterFilterTest {
     @Mock
     private FilterChain chain;
 
-    private StringWriter responseWriter;
-
     @BeforeEach
     void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
         filter = new RateLimiterFilter(rateLimiter);
-        responseWriter = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(responseWriter);
-        when(response.getWriter()).thenReturn(printWriter);
     }
 
     @Nested
@@ -70,15 +65,15 @@ class RateLimiterFilterTest {
     class RateLimitExceeded {
 
         @Test
-        @DisplayName("요청이 너무 많으면 429 응답을 반환한다.")
+        @DisplayName("요청이 너무 많으면 Rate Limit 초과 예외를 던지고 필터 체인을 실행하지 않는다.")
         void givenRateLimitExceeded_whenFiltering_thenReturnsTooManyRequests() throws IOException, ServletException {
             when(request.getHeader("x-api-key")).thenReturn(TEST_API_KEY);
             when(rateLimiter.allowRequest(TEST_API_KEY)).thenReturn(false);
 
-            filter.doFilter(request, response, chain);
+            assertThatThrownBy(() -> filter.doFilter(request, response, chain))
+                    .isInstanceOf(RateLimitExceededException.class);
 
             verify(rateLimiter).allowRequest(TEST_API_KEY);
-            verify(response).sendError(429, "요청이 너무 많습니다. 10초 내 최대 10건의 요청만 허용됩니다. 잠시 후 다시 시도해주세요.");
             verify(chain, never()).doFilter(any(), any());
         }
     }
@@ -88,16 +83,16 @@ class RateLimiterFilterTest {
     class MissingApiKey {
 
         @Test
-        @DisplayName("API Key가 없으면 요청을 차단하고 429 응답을 반환한다.")
+        @DisplayName("API Key가 없으면 요청을 차단하고 Rate Limit 초과 예외를 던진다.")
         void givenNoApiKey_whenFiltering_thenReturnsTooManyRequests() throws IOException, ServletException {
             when(request.getHeader("x-api-key")).thenReturn(null);
             when(request.getParameter("apikey")).thenReturn(null);
             when(rateLimiter.allowRequest(null)).thenReturn(false);
 
-            filter.doFilter(request, response, chain);
+            assertThatThrownBy(() -> filter.doFilter(request, response, chain))
+                    .isInstanceOf(RateLimitExceededException.class);
 
             verify(rateLimiter).allowRequest(null);
-            verify(response).sendError(429, "요청이 너무 많습니다. 10초 내 최대 10건의 요청만 허용됩니다. 잠시 후 다시 시도해주세요.");
             verify(chain, never()).doFilter(any(), any());
         }
     }

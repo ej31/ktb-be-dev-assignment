@@ -19,6 +19,7 @@ import org.ktb.ktbbedevassignment.config.MapperConfig;
 import org.ktb.ktbbedevassignment.dto.ApiResponse;
 import org.ktb.ktbbedevassignment.exception.InvalidApiKeyException;
 import org.ktb.ktbbedevassignment.exception.NotMatchedApiKeyException;
+import org.ktb.ktbbedevassignment.exception.RateLimitExceededException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
@@ -97,6 +98,21 @@ class ExceptionHandlingFilterTest {
             filter.doFilter(request, response, chain);
 
             verifyErrorResponse(HttpStatus.FORBIDDEN, "잘못된 API Key입니다.");
+        }
+    }
+
+    @Nested
+    @DisplayName("Rate Limit 초과 테스트")
+    class RateLimitExceededTests {
+
+        @Test
+        @DisplayName("RateLimitExceededException 발생 시 429 JSON 응답을 반환한다.")
+        void givenRateLimitExceededException_whenFiltering_thenReturnsTooManyRequestsJson() throws IOException, ServletException {
+            doThrow(new RateLimitExceededException()).when(chain).doFilter(request, response);
+
+            filter.doFilter(request, response, chain);
+
+            verifyErrorResponse(HttpStatus.TOO_MANY_REQUESTS, "요청이 너무 많습니다. 10초 내 최대 10건의 요청만 허용됩니다. 잠시 후 다시 시도해주세요.");
         }
     }
 
