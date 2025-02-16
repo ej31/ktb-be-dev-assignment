@@ -2,7 +2,7 @@ package org.ktb.stock.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.ktb.stock.dto.StockResponseDto;
-import org.ktb.stock.dto.StockSearchDto;
+import org.ktb.stock.dto.StockServiceDto;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -23,7 +23,7 @@ public class StockRepository {
             );
 
     // 사용자가 입력한 회사 코드, 조회 시작 기간, 조회 종료 기간에 해당하는 주식 정보 가져오는 로직
-    public List<StockResponseDto> findStocks(StockSearchDto stockSearchDto) {
+    public List<StockResponseDto> findStocks(StockServiceDto stockServiceDto) {
         String sql = "SELECT c.company_name, sh.trade_date, sh.close_price FROM company c " +
                 "JOIN stocks_history sh " +
                 "ON c.company_code = sh.company_code " +
@@ -32,9 +32,9 @@ public class StockRepository {
         return jdbcTemplate.query(
                 sql,
                 stockResponseDtoRowMapper,
-                stockSearchDto.getCompanyCode(),
-                stockSearchDto.getStartDate(),
-                stockSearchDto.getEndDate()
+                stockServiceDto.getCompanyCode(),
+                stockServiceDto.getStartDate(),
+                stockServiceDto.getEndDate()
         );
     }
 
