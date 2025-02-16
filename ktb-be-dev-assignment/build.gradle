@@ -1,0 +1,57 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.2'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'org.ktb'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Springboot starter
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-logging'
+
+	// etc
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.2'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2' // LocalDateTime parsing 을 위해 추가
+
+	// DB
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'com.h2database:h2:2.3.232'
+}
+
+jar {
+	enabled = false // 기본 JAR 빌드를 비활성화하여 실행 가능 JAR를 생성
+}
+
+bootJar {
+	manifest {
+		attributes 'Main-Class': 'org.springframework.boot.loader.launch.JarLauncher'
+	}
+
+	archiveBaseName.set('app') // JAR 파일 이름을 'app'으로 설정
+	archiveVersion.set('')  // 버전 정보 제거
+	archiveClassifier.set('') // 추가적인 접미사 제거
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

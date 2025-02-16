@@ -1,0 +1,22 @@
+spring:
+  application.name: ktb-be-dev-assignment
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 1  # 최소한의 커넥션 유지 (이 값을 설정해야 `idle-timeout` 적용됨)
+      maximum-pool-size: 3  # 최대 5 개 조건
+      idle-timeout: 15000  # 최소 15초 이상 유지 후 해제
+      max-lifetime: 1800000  # 30분으로 설정 (DB timeout보다 작게)
+      connection-timeout: 10000  # 10초 이내 응답 받도록 조정
+
+logging:
+  file:
+    name: logs/app.log   # 로그 파일 경로 지정
+  level:
+    org.ktb.ktbbedevassignment: INFO
+    org.springframework: WARN
+
+api.key: ${API_KEY}
