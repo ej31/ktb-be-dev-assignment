@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-public class StockSearchDto {
+public class StockServiceDto {
     private String companyCode;
     private LocalDate startDate;
     private LocalDate endDate;
