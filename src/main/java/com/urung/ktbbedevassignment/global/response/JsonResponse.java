@@ -1,4 +1,4 @@
-package com.urung.ktbbedevassignment.global.dto;
+package com.urung.ktbbedevassignment.global.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
