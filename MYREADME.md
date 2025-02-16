@@ -72,4 +72,21 @@ but 세부적인 로그 설정이 필요하면 logback-spring.xml을 사용할 �
   
 ---
 
+### 배포
+- docker, dockerhub를 사용하였고 AWS ec2에 pull받아서 배포
+- 환경변수는 .env파일로 주입<br>
 
+.env
+```
+DB_HOST=
+DB_PORT=
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+
+API_KEY=
+```
+도커 이미지 : ahnsojeong/stock-api:v2<br>
+요청 주소 : http://43.201.95.193
+
+---
