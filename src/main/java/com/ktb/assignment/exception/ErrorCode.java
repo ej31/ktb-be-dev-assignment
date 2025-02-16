@@ -20,6 +20,9 @@ public enum ErrorCode {
     // 404 error
     NOT_FOUND_END_POINT("40400", HttpStatus.NOT_FOUND, "존재하지 않는 엔드포인트입니다."),
 
+    // 429 error
+    RATE_LIMIT_EXCEEDED("42900", HttpStatus.TOO_MANY_REQUESTS, "API Key 요청 제한 초과 (10초당 최대 10건)"),
+
     // 500 error
     SERVER_ERROR("50000", HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다.");
 
