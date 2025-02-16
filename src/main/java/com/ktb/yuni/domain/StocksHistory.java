@@ -1,6 +1,7 @@
 package com.ktb.yuni.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @IdClass(StocksHistoryId.class)
 @Table(name = "stocks_history")
 public class StocksHistory {
