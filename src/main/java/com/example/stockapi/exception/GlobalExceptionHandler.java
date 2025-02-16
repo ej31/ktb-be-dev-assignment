@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(org.springframework.web.servlet.NoHandlerFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleNotFoundException(HttpServletRequest request) {
         log.warn("API Not Found");
-        return createErrorResponse("API Not Found", "존재하지 않는 API 입니다.", HttpStatus.NOT_FOUND, request);
+        return createErrorResponse("API Not Found", "API does not exist..", HttpStatus.NOT_FOUND, request);
     }
 
     // 기타 예외 처리 (500 Internal Server Error)
