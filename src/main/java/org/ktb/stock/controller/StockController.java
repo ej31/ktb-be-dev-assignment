@@ -1,5 +1,6 @@
 package org.ktb.stock.controller;
 
+import io.github.bucket4j.Bucket;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ktb.stock.config.BucketConfig;
 import org.ktb.stock.dto.StockRequestDto;
 import org.ktb.stock.dto.StockResponseDto;
 import org.ktb.stock.dto.StockServiceDto;
@@ -33,6 +35,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class StockController {
     private final StockService stockService;
+    private final BucketConfig bucketConfig;
 
     @Value("${api.key}")
     private String apiKey;
@@ -75,6 +78,14 @@ public class StockController {
                     }
             ),
             @ApiResponse(
+                    responseCode = "429",
+                    description = "너무 많은 요청을 보냈음",
+                    content = {
+                            @Content(mediaType = "application/json",schema = @Schema(implementation = CommonResponse.class)),
+                            @Content(mediaType = "application/xml", schema = @Schema(implementation = CommonResponse.class))
+                    }
+            ),
+            @ApiResponse(
                     responseCode = "500",
                     description = "서버 오류",
                     content = {
@@ -90,6 +101,7 @@ public class StockController {
             @RequestHeader(name = "Accept", required = false) String acceptHeader) {
 
         validateApiKey(requestApiKey);
+        validateRateLimit(requestApiKey);
         validateRequestDto(stockRequestDto);
         if(!stockService.getCompany(stockRequestDto.getCompanyCode())) throw new BusinessException(ErrorCode.INVALID_COMPANY_CODE);
 
@@ -110,6 +122,15 @@ public class StockController {
         if(!requestApiKey.equals(apiKey)) {
             log.info("api 키가 일치하지 않습니다.");
             throw new BusinessException(ErrorCode.INVALID_API_KEY);
+        }
+    }
+
+    // Rate-limit 검증 로직
+    private void validateRateLimit(String requestApiKey) {
+        Bucket bucket = bucketConfig.resolveBucket(requestApiKey);
+        if (!bucket.tryConsume(1)) {
+            log.warn("Rate limit exceeded for API key: {}", requestApiKey);
+            throw new BusinessException(ErrorCode.TOO_MANY_REQUESTS);
         }
     }
 
