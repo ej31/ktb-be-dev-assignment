@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:mysql://ec2-3-36-99-237.ap-northeast-2.compute.amazonaws.com:13306/assignment
+    username: hyun
+    password: pyeu4CcTZOVq0N1g6HMz8f9dk
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 5
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+
+
