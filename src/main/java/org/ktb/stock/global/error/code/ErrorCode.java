@@ -14,7 +14,7 @@ public enum ErrorCode {
     // 잘못된 요청이 올 경우
     INVALID_REQUEST_PARAMETER(HttpStatus.BAD_REQUEST.value(), "필수 요청 값이 누락되었습니다."),
     INVALID_COMPANY_CODE(HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회사 코드입니다."),
-    INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST.value(), "날짜 형식이 올바르지 않습니다."),
+    INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST.value(), "날짜는 yyyy-MM-dd 형식이어야 합니다"),
     INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST.value(), "시작 날짜가 종료 날짜보다 늦습니다."),
 
     // 리소스를 찾을 수 없는 경우
@@ -46,7 +46,6 @@ public enum ErrorCode {
  * 리소스가 없을 때
  * 1. 해당 기간 동안 주식 데이터가 없음
  * 2. 호출한 API 없음
- *
  * 서버 오류
  * 1. 500 에러 반환
  */
