@@ -18,4 +18,8 @@ public class StockService {
     public List<StockResponseDto> getStocks(StockSearchDto stockSearchDto) {
         return stockRepository.findStocks(stockSearchDto);
     }
+
+    public boolean getCompany(String companyCode) {
+        return stockRepository.findCompany(companyCode);
+    }
 }
