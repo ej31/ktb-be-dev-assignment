@@ -41,9 +41,10 @@ public class StockController {
         if (!VALID_API_KEY.equals(key)) {
             throw new ApiKeyInvalidException("유효하지 않은 API Key입니다.");
         }
-        LocalDate tradeDate = LocalDate.parse(requestDto.getTradeDate());
+        LocalDate startDate = LocalDate.parse(requestDto.getStartDate());
+        LocalDate endDate = LocalDate.parse(requestDto.getEndDate());
 
-        return stockService.getStockPrices(requestDto.getCompanyCode(), tradeDate);
+        return stockService.getStockPricesByRange(requestDto.getCompanyCode(), startDate,endDate);
     }
 
 }
