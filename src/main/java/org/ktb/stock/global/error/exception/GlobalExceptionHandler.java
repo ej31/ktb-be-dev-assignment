@@ -3,6 +3,7 @@ package org.ktb.stock.global.error.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.ktb.stock.global.common.ApiResponse;
 import org.ktb.stock.global.error.code.ErrorCode;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,11 +42,17 @@ public class GlobalExceptionHandler {
         return ApiResponse.error(ErrorCode.NOT_FOUND_API);
     }
 
+    // 회사 코드로 있는 회사인지 확인하는 중 단건 조회 에러가 났을 때
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<ApiResponse<Void>> handleEmptyResultDataAccessException(EmptyResultDataAccessException e) {
+        log.warn("No data found: {}", e.getMessage());
+        return ApiResponse.error(ErrorCode.INVALID_COMPANY_CODE);
+    }
+
     // 예상치 못한 서버 에러
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
         log.error("Exception: {}", e.getMessage(), e);
         return ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR);
     }
-
 }
