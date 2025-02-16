@@ -8,9 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @SpringBootTest
 @AutoConfigureMockMvc  // MockMvc 자동 설정
@@ -32,6 +34,31 @@ class StockControllerTest {
                 .param("endDate", "2024-01-10")
                 .header("x-api-key", API_KEY))
                 .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @DisplayName("정상 요청 - JSON 응답")
+    void getStockPrices_JSON_Success() throws Exception {
+        mockMvc.perform(get("/api/v1/stock/AAPL")
+                .param("startDate", "2024-01-01")
+                .param("endDate", "2024-01-10")
+                .header("x-api-key", API_KEY)
+                .accept(MediaType.APPLICATION_JSON))  // JSON 응답 요청
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)); // JSON 타입 확인
+    }
+
+    @Test
+    @DisplayName("정상 요청 - XML 응답")
+    void getStockPrices_XML_Success() throws Exception {
+        mockMvc.perform(get("/api/v1/stock/AAPL")
+                .param("startDate", "2024-01-01")
+                .param("endDate", "2024-01-10")
+                .header("x-api-key", API_KEY)
+                .accept(MediaType.APPLICATION_XML))  // XML 응답 요청
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML)); // XML 타입 확인
     }
 
     @Test
