@@ -50,7 +50,7 @@ public class StockController {
         if (apiKey == null) {
             throw new InvalidApiKeyException("API key가 누락되었습니다.");
         }
-        if (!constants.getApiKey().equals(apiKey)) {
+        if (!constants.getKey().equals(apiKey)) {
             throw new InvalidApiKeyException("올바르지 않은 API key 입니다.");
         }
     }

@@ -1,14 +1,18 @@
 package com.ktb.yuni.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.validation.annotation.Validated;
 
-@Component
+@Validated
+@Configuration
+@ConfigurationProperties(prefix = "api")
+@Getter
+@Setter
 public class Constants {
-    @Value("${api.key}")
-    private String apiKey;
-
-    public String getApiKey() {
-        return apiKey;
-    }
+    @NotBlank(message = "API key가 필요합니다.")
+    private String key;
 }
