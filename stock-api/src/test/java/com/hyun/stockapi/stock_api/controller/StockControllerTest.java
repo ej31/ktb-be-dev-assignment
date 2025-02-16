@@ -35,7 +35,8 @@ class StockControllerTest {
 
         mockMvc.perform(get("/api/v1/stocks")
                 .param("companyCode","AAPL")
-                .param("tradeDate","2020-01-01"))
+                .param("startDate","2020-01-01")
+                .param("endDate","2023-02-02"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("API Key가 누락되었습니다. (쿼리파라미터 apikey 또는 헤더 x-api-key 사용)"));
     }
@@ -46,7 +47,8 @@ class StockControllerTest {
 
         mockMvc.perform(get("/api/v1/stocks")
                 .param("companyCode","AAPL")
-                .param("tradeDate","2020-01-01")
+                .param("startDate","2020-01-01")
+                .param("endDate","2002-02-03")
                 .param("apikey","invalid-key"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error").value("유효하지 않은 API Key입니다."));
@@ -56,7 +58,8 @@ class StockControllerTest {
     void testMissingCompanyCode() throws Exception{
 
         mockMvc.perform(get("/api/v1/stocks")
-                        .param("tradeDate", "2020-01-01")
+                        .param("startDate","2020-01-01")
+                        .param("endDate","2002-02-03")
                         .param("apikey", VALID_API_KEY))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.companyCode").value("종목 코드(companyCode)는 필수 입력값입니다."))
@@ -69,10 +72,12 @@ class StockControllerTest {
 
         mockMvc.perform(get("/api/v1/stocks")
                 .param("companyCode","AAPL")
-                .param("tradeDate","202001-01")
+                .param("startDate","202001-01")
+                .param("endDate","2002-01-1")
                 .param("apikey",VALID_API_KEY))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.tradeDate").value("날짜 형식이 올바르지 않습니다. (yyyy-MM-dd 형식으로 입력해주세요)"));
+                .andExpect(jsonPath("$.startDate").value("날짜 형식이 올바르지 않습니다. (yyyy-MM-dd 형식으로 입력해주세요)"))
+                .andExpect(jsonPath("$.endDate").value("날짜 형식이 올바르지 않습니다. (yyyy-MM-dd 형식으로 입력해주세요)"));
     }
     @Test
     @DisplayName("5) 정상 호출 => 200 OK")
@@ -80,7 +85,8 @@ class StockControllerTest {
 
         mockMvc.perform(get("/api/v1/stocks")
                         .param("companyCode", "AAPL")
-                        .param("tradeDate", "2025-02-15")
+                        .param("startDate", "2025-02-15")
+                        .param("endDate", "2025-02-23")
                         .param("apikey", VALID_API_KEY))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
