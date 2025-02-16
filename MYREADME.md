@@ -86,7 +86,9 @@ DB_PASSWORD=
 
 API_KEY=
 ```
-도커 이미지 : ahnsojeong/stock-api:v2<br>
+도커 이미지 : ahnsojeong/stock-api:v3<br>
+실행 명령어 : docker run -d -p 80:8080 --name stock-api --env-file .env ahnsojeong/stock-api:v3
+
 요청 주소 : http://43.201.95.193
 
 ---
