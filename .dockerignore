@@ -1,0 +1,36 @@
+# Gradle
+.gradle/
+gradlew
+gradlew.bat
+gradle/
+
+# Build outputs
+build/
+!build/libs/*.jar
+out/
+
+# IDE specific
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.settings/
+.project
+.classpath
+
+# Logs
+logs/
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Others
+README.md
+LICENSE
