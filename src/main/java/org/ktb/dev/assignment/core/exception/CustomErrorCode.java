@@ -2,6 +2,8 @@ package org.ktb.dev.assignment.core.exception;
 
 import lombok.RequiredArgsConstructor;
 
+import java.text.MessageFormat;
+
 @RequiredArgsConstructor
 public enum CustomErrorCode implements ErrorCode {
     /*
@@ -15,32 +17,30 @@ public enum CustomErrorCode implements ErrorCode {
      */
 
     // 400 Bad Request
-    MISSING_REQUIRED_PARAMETER(400, "E001", "필수 파라미터가 누락되었습니다."),
-    INVALID_PARAMETER_VALUE(400, "E002", "잘못된 파라미터 값입니다."),
-    MISSING_API_KEY(400, "E003", "API 키가 누락되었습니다."),
-    INVALID_REQUEST_BODY(400, "E004", "잘못된 요청 본문입니다."),
-    INVALID_INPUT_VALUE(400, "E005", "잘못된 입력값입니다."),
-    INVALID_DATE_FORMAT(400, "C003", "날짜 형식이 올바르지 않습니다. (yyyy-MM-dd 형식으로 입력해주세요)"),
+    MISSING_REQUIRED_PARAMETER(400, "E001", CustomErrorMessage.MISSING_PARAMETER),
+    INVALID_PARAMETER_VALUE(400, "E002", CustomErrorMessage.INVALID_PARAMETER),
+    MISSING_API_KEY(400, "E003", CustomErrorMessage.MISSING_API_KEY),
+    INVALID_REQUEST_BODY(400, "E004", CustomErrorMessage.INVALID_REQUEST_BODY),
+    INVALID_INPUT_VALUE(400, "E005", CustomErrorMessage.INVALID_INPUT),
+    INVALID_DATE_FORMAT(400, "E006", CustomErrorMessage.INVALID_DATE_FORMAT),
 
     // 403 Forbidden
-    INVALID_API_KEY(403, "E101", "유효하지 않은 API 키입니다."),
-    ACCESS_DENIED(403, "E102", "접근이 거부되었습니다."),
+    INVALID_API_KEY(403, "E101", CustomErrorMessage.INVALID_API_KEY),
 
     // 404 Not Found
-    API_NOT_FOUND(404, "E201", "요청한 API를 찾을 수 없습니다."),
-    RESOURCE_NOT_FOUND(404, "E202", "요청한 리소스를 찾을 수 없습니다."),
-    COMPANY_NOT_FOUND(404, "E203", "기업 코드 %s를 찾을 수 없습니다."),
+    API_NOT_FOUND(404, "E201", CustomErrorMessage.API_NOT_FOUND),
+    RESOURCE_NOT_FOUND(404, "E202", CustomErrorMessage.RESOURCE_NOT_FOUND),
+    COMPANY_NOT_FOUND(404, "E203", CustomErrorMessage.COMPANY_NOT_FOUND),
 
     // 429 Too Many Requests
-    RATE_LIMIT_EXCEEDED(429, "E301", "요청 제한을 초과했습니다. {limit}건/{duration}초 제한"),
+    RATE_LIMIT_EXCEEDED(429, "E301", CustomErrorMessage.RATE_LIMIT_EXCEEDED),
 
     // 500 Internal Server Error
-    INTERNAL_SERVER_ERROR(500, "E901", "서버 내부 오류가 발생했습니다.");
-
+    INTERNAL_SERVER_ERROR(500, "E901", CustomErrorMessage.INTERNAL_SERVER_ERROR);
 
     private final int status;
     private final String code;
-    private final String message;
+    private final CustomErrorMessage messageTemplate;
 
     @Override
     public int getStatus() {
@@ -54,6 +54,14 @@ public enum CustomErrorCode implements ErrorCode {
 
     @Override
     public String getMessage() {
-        return message;
+        return messageTemplate.getMessage();
+    }
+
+    public String getMessage(Object... args) {
+        return messageTemplate.formatMessage(args);
+    }
+
+    public String formatMessage(Object... args) {
+        return MessageFormat.format(getMessage(), args);
     }
 }

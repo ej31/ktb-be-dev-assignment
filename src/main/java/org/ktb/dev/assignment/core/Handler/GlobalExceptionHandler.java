@@ -71,9 +71,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * API 검증 관련 모든 예외를 처리하는 통합 핸들러
      */
     @ExceptionHandler({
-            ConstraintViolationException.class,
-            DateTimeParseException.class,
-            MethodArgumentTypeMismatchException.class
+            ConstraintViolationException.class, // @Valid @NotNull
+            DateTimeParseException.class, // 날짜 문자열 파싱 에러
+            MethodArgumentTypeMismatchException.class // 파라미터 타입 변환 실패
     })
     protected ResponseEntity<ErrorResponse> handleValidationExceptions(Exception ex) {
         log.error(LOG_FORMAT, "ValidationException", ex.getMessage(), ex);
