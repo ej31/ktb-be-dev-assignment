@@ -5,6 +5,8 @@ import org.ktb.stock.global.error.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -15,9 +17,12 @@ public class ApiResponse<T>{
     private T data; // 데이터를 실제로 담는 필드
 
     public static <T> ResponseEntity<ApiResponse<T>> success(T data) {
+        String message = (data instanceof List && ((List<?>) data).isEmpty())
+                ? "해당 기간에 조회된 주식 데이터가 없습니다."
+                : "주식 데이터를 성공적으로 조회했습니다.";
         ApiResponse<T> response = ApiResponse.<T>builder()
                 .success(true)
-                .message("데이터를 가져오는데 성공했습니다.")
+                .message(message)
                 .data(data)
                 .build();
         return ResponseEntity.ok(response);
