@@ -40,8 +40,12 @@ public class StockController {
     }
 
     private void validateApiKey(String apiKey) {
+        if (apiKey == null) {
+            throw new IllegalArgumentException("API key가 누락되었습니다.");
+        }
+
         if (!VALID_API_KEY.equals(apiKey)) {
-            throw new IllegalArgumentException("Invalid API key");
+            throw new IllegalArgumentException("올바르지 않은 API key 입니다.");
         }
     }
 }
