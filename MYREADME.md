@@ -38,3 +38,15 @@
 
 ---
 
+### Custom Exception
+application.properties(기본지원)과 logback-spring.xml 중 application.properties 선택<br>
+이유 : 간단하게 설정 가능하며 다른 XML 설정이 불필요하였기 때문.<br>
+but 세부적인 로그 설정이 필요하면 logback-spring.xml을 사용할 예정
+
+📌 **설정 내용**
+- **로그 파일 최대 크기**: 10MB 이상이면 자동으로 새로운 파일 생성
+- **로그 보관 기간**: 30일간 로그 유지 (이후 자동 삭제)
+- **전체 로그 저장 용량**: 1GB를 초과하면 오래된 로그부터 삭제
+- **로그 파일 저장 경로**: `logs/app.log`
+
+---
