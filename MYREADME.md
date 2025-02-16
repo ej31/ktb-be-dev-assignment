@@ -57,3 +57,19 @@ but 세부적인 로그 설정이 필요하면 logback-spring.xml을 사용할 �
 - /api/v1/stocks?format=json → JSON 응답
 - /api/v1/stocks?format=xml → XML 응답
 - 별도 지정이 없으면 기본 JSON 응답
+
+#### 💣 트러블 슈팅 💣
+**[문제]**
+- 예외 발생 시 **JSON으로만 응답이 반환됨**
+- `/api/v1/stocks?format=xml` 요청 시에도 **XML 응답이 나오지 않음**
+- `GlobalExceptionHandler`에서 정의한 **커스텀 예외 처리(`ErrorResponseDTO`)가 무시됨**
+
+**[해결 방법]**
+- `application.properties`에서 **Spring Boot의 자동 예외 처리를 비활성화**
+    ```properties
+    spring.mvc.problemdetails.enabled=false
+    ```
+  
+---
+
+
