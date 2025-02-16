@@ -3,6 +3,7 @@ package com.ktb.yuni.controller;
 import com.ktb.yuni.config.Constants;
 import com.ktb.yuni.dto.ApiResponse;
 import com.ktb.yuni.dto.StockResponseDto;
+import com.ktb.yuni.exception.InvalidApiKeyException;
 import com.ktb.yuni.service.StockService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -41,13 +42,16 @@ public class StockController {
         return ResponseEntity.ok(ApiResponse.success("주식 데이터 조회 성공", response));
     }
 
+    /**
+     * 요청 API 키의 유효성을 검증
+     * - 키가 없거나 잘못된 경우 InvalidApiKeyException 발생
+     */
     private void validateApiKey(String apiKey) {
         if (apiKey == null) {
-            throw new IllegalArgumentException("API key가 누락되었습니다.");
+            throw new InvalidApiKeyException("API key가 누락되었습니다.");
         }
-
         if (!constants.getApiKey().equals(apiKey)) {
-            throw new IllegalArgumentException("올바르지 않은 API key 입니다.");
+            throw new InvalidApiKeyException("올바르지 않은 API key 입니다.");
         }
     }
 }
