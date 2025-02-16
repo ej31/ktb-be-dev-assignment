@@ -1,9 +1,7 @@
 package org.ktb.ktbbedevassignment.presentation;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import org.ktb.ktbbedevassignment.aop.JsonXmlResponse;
 import org.ktb.ktbbedevassignment.application.ApiKeyValidator;
 import org.ktb.ktbbedevassignment.application.StockService;
@@ -30,13 +28,8 @@ public class StockController {
     @GetMapping
     @JsonXmlResponse
     public ResponseEntity<ApiResponse<List<StockInfoDto>>> getStocks(
-            @Valid StockInfoRequest stockInfoRequest,
-            HttpServletRequest request
+            @Valid StockInfoRequest stockInfoRequest
     ) {
-        String apiKey = Optional.ofNullable(request.getHeader("x-api-key"))
-                .orElse(request.getParameter("apikey"));
-        apiKeyValidator.validateApiKey(apiKey);
-
         List<StockInfoDto> result = stockService.getStockInfo(
                 stockInfoRequest.companyCode(),
                 stockInfoRequest.startDate(),
