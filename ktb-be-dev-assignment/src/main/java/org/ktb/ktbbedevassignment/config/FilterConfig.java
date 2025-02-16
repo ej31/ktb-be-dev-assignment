@@ -5,6 +5,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.ktb.ktbbedevassignment.application.ApiKeyValidator;
 import org.ktb.ktbbedevassignment.filter.ApiKeyAuthFilter;
 import org.ktb.ktbbedevassignment.filter.ExceptionHandlingFilter;
+import org.ktb.ktbbedevassignment.filter.RateLimiterFilter;
+import org.ktb.ktbbedevassignment.util.RateLimiter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +42,14 @@ public class FilterConfig {
         FilterRegistrationBean<ApiKeyAuthFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new ApiKeyAuthFilter(apiKeyValidator));
         registrationBean.setOrder(1);
+        return registrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<RateLimiterFilter> rateLimiterFilter(RateLimiter rateLimiter) {
+        FilterRegistrationBean<RateLimiterFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new RateLimiterFilter(rateLimiter));
+        registrationBean.setOrder(2);
         return registrationBean;
     }
 }
