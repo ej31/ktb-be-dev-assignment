@@ -1,12 +1,17 @@
 package org.ktb.stock.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Schema(description = "주식 조회 응답 DTO")
+@XmlRootElement(name = "StockResponse")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Getter
 @AllArgsConstructor
 public class StockResponseDto {
