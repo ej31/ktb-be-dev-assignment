@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.ktb.ktbbedevassignment.application.ApiKeyValidator;
 import org.ktb.ktbbedevassignment.application.StockService;
 import org.ktb.ktbbedevassignment.config.MapperConfig;
 import org.ktb.ktbbedevassignment.dto.StockInfoDto;
@@ -26,7 +25,6 @@ import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.TEST_CLOSING_P
 import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.TEST_TRADE_DATE;
 import static org.ktb.ktbbedevassignment.fixture.StockTestFixture.createTestStockInfoDtoList;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,12 +44,10 @@ class StockControllerTest {
     private MockMvc mockMvc;
     @MockitoBean
     private StockService stockService;
-    @MockitoBean
-    private ApiKeyValidator apiKeyValidator;
 
     @BeforeEach
     void setUp() {
-        reset(stockService, apiKeyValidator);
+        reset(stockService);
     }
 
     @Nested
@@ -66,7 +62,6 @@ class StockControllerTest {
             @DisplayName("정상적인 요청 시 200 OK를 반환한다")
             void getStocks_ValidRequest_Returns200() throws Exception {
                 // given
-                doNothing().when(apiKeyValidator).validateApiKey(TEST_API_KEY);
                 when(stockService.getStockInfo(any(), any(), any()))
                         .thenReturn(stockInfoList);
 
