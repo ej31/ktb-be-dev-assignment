@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.ktb.ktbbedevassignment.dto.StockInfoDto;
-import org.ktb.ktbbedevassignment.util.TestDataHelper;
+import org.ktb.ktbbedevassignment.support.TestDataHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;

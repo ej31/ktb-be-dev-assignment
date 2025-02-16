@@ -1,4 +1,4 @@
-package org.ktb.ktbbedevassignment.util;
+package org.ktb.ktbbedevassignment.support;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
