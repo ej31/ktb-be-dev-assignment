@@ -1,11 +1,11 @@
 package com.ktb.assignment.stock.controller;
 
-
 import com.ktb.assignment.stock.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.ktb.assignment.stock.dto.*;
 import com.ktb.assignment.stock.security.ApiKeyValidator;
+import com.ktb.assignment.stock.exception.StockException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,8 +38,8 @@ public class StockController {
             @RequestParam(value = "format", required = false, defaultValue = "json") String format) {
         
         String apiKey = (headerApiKey != null) ? headerApiKey : queryApiKey;
-        if (apiKey == null) return ResponseEntity.badRequest().body("{\"success\": false, \"message\": \"API key is required\"}");
-        if (!apiKeyValidator.isValidApiKey(apiKey)) return ResponseEntity.status(403).body("{\"success\": false, \"message\": \"Invalid API key\"}");
+        if (apiKey == null) throw new StockException(400, "API key is required");
+        if (!apiKeyValidator.isValidApiKey(apiKey)) throw new StockException(403, "Invalid API key");
 
         LocalDate start = LocalDate.parse(startDate);
         LocalDate end = LocalDate.parse(endDate);
@@ -59,7 +59,7 @@ public class StockController {
                         .body(jsonMapper.writeValueAsString(responseWrapper));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("{\"success\": false, \"message\": \"Error generating response\"}");
+            throw new StockException(500, "Error generating response");
         }
     }
 }
