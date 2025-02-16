@@ -1,12 +1,14 @@
-package ktb.back.assignment.model;
+package ktb.back.assignment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDate;
+
 @Getter
 @AllArgsConstructor
-public class ResponseCompanyDto {
+public class ResponseCompanyStockHistory {
     private String companyName;
-    private String tradeDate;
+    private LocalDate tradeDate;
     private float closingPrice;
 }
