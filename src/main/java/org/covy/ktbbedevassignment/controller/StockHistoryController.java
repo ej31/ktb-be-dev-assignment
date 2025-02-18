@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+// API 요청 처리
+
 @RestController
 @RequestMapping("/api/v1/stocks")
 @RequiredArgsConstructor

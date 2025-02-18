@@ -6,6 +6,8 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+// DB 테이블과 매핑
+
 @Entity
 @Getter
 @Setter

@@ -3,6 +3,8 @@ package org.covy.ktbbedevassignment.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+// DB 테이블과 매핑
+
 @Entity
 @Getter
 @Setter

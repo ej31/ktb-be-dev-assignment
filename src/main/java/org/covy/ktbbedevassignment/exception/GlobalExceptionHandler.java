@@ -10,6 +10,8 @@ import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
+// 예외처리 수행
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -36,6 +38,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleGeneralException(Exception ex) {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다.");
     }
+
 
     //  공통 에러 응답 생성 메서드
     private ResponseEntity<Object> buildErrorResponse(HttpStatus status, String message) {
