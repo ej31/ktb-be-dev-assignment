@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.FORBIDDEN, "API Key가 유효하지 않습니다.");
     }
 
-    //  404 NOT FOUND - 데이터가 존재하지 않을 경우
+    //  404 NOT FOUND - 해당 기간 데이터가 존재하지 않을 경우
     @ExceptionHandler({IllegalArgumentException.class, NotFoundException.class})
     public ResponseEntity<Object> handleNotFound(Exception ex) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
